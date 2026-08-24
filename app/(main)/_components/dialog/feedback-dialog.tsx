@@ -34,7 +34,7 @@ export default function FeedbackDialog({ children }: Props) {
 
         <div className="mb-7 mt-4 flex flex-col items-center px-3">
           <p className="mb-1 text-sm">
-            What do you feel when using <strong>Station Note</strong>?
+            Como você se sente usando o <strong>Station Note</strong>?
           </p>
           <RadioGroup
             className="flex gap-x-2 md:gap-x-3"
@@ -46,14 +46,8 @@ export default function FeedbackDialog({ children }: Props) {
                 className="flex shrink-0 cursor-pointer flex-col gap-y-1 text-center text-xs grayscale transition hover:grayscale-0 peer-[[data-state=checked]]:grayscale-0"
                 htmlFor="feel-one"
               >
-                <Image
-                  src="/assets/emoji/1F620.svg"
-                  alt=""
-                  height={48}
-                  width={48}
-                  className="scale-125"
-                />
-                Terrible
+                <Image src="/assets/emoji/1F620.svg" alt="" height={48} width={48} className="scale-125" />
+                Péssimo
               </Label>
             </div>
             <div className="flex items-center">
@@ -62,14 +56,8 @@ export default function FeedbackDialog({ children }: Props) {
                 className="flex shrink-0 cursor-pointer flex-col gap-y-1 text-center text-xs grayscale transition hover:grayscale-0 peer-[[data-state=checked]]:grayscale-0"
                 htmlFor="feel-two"
               >
-                <Image
-                  src="/assets/emoji/2639.svg"
-                  alt=""
-                  height={48}
-                  width={48}
-                  className="scale-125"
-                />
-                Bad
+                <Image src="/assets/emoji/2639.svg" alt="" height={48} width={48} className="scale-125" />
+                Ruim
               </Label>
             </div>
             <div className="flex items-center">
@@ -78,14 +66,8 @@ export default function FeedbackDialog({ children }: Props) {
                 className="flex shrink-0 cursor-pointer flex-col gap-y-1 text-center text-xs grayscale transition hover:grayscale-0 peer-[[data-state=checked]]:grayscale-0"
                 htmlFor="feel-three"
               >
-                <Image
-                  src="/assets/emoji/1F610.svg"
-                  alt=""
-                  height={48}
-                  width={48}
-                  className="scale-125"
-                />
-                Okay
+                <Image src="/assets/emoji/1F610.svg" alt="" height={48} width={48} className="scale-125" />
+                Regular
               </Label>
             </div>
             <div className="flex items-center">
@@ -94,14 +76,8 @@ export default function FeedbackDialog({ children }: Props) {
                 className="flex shrink-0 cursor-pointer flex-col gap-y-1 text-center text-xs grayscale transition hover:grayscale-0 peer-[[data-state=checked]]:grayscale-0"
                 htmlFor="feel-four"
               >
-                <Image
-                  src="/assets/emoji/1F642.svg"
-                  alt=""
-                  height={48}
-                  width={48}
-                  className="scale-125"
-                />
-                Good
+                <Image src="/assets/emoji/1F642.svg" alt="" height={48} width={48} className="scale-125" />
+                Bom
               </Label>
             </div>
             <div className="flex items-center">
@@ -110,14 +86,8 @@ export default function FeedbackDialog({ children }: Props) {
                 className="flex shrink-0 cursor-pointer flex-col gap-y-1 text-center text-xs grayscale transition hover:grayscale-0 peer-[[data-state=checked]]:grayscale-0"
                 htmlFor="feel-five"
               >
-                <Image
-                  src="/assets/emoji/1F600.svg"
-                  alt=""
-                  height={48}
-                  width={48}
-                  className="scale-125"
-                />
-                Amazing
+                <Image src="/assets/emoji/1F600.svg" alt="" height={48} width={48} className="scale-125" />
+                Excelente
               </Label>
             </div>
           </RadioGroup>
@@ -127,8 +97,8 @@ export default function FeedbackDialog({ children }: Props) {
           <div className="mb-3 px-3">
             <Label htmlFor="message" className="mb-2 block">
               {feel === "AMAZING"
-                ? "So, we did a good job?"
-                : "Any thoughts you'd like to share?"}
+                ? "Então, fizemos um bom trabalho?"
+                : "Quer compartilhar alguma observação?"}
             </Label>
             <Textarea
               value={message}
@@ -147,7 +117,7 @@ export default function FeedbackDialog({ children }: Props) {
               checked={isContacted}
             />
             <Label htmlFor="is-contacted" className="leading-tight">
-              I&apos;m happy to be contacted to discuss this feedback
+              Aceito ser contatado para conversar sobre este feedback
             </Label>
           </div>
         )}
@@ -163,7 +133,7 @@ export default function FeedbackDialog({ children }: Props) {
               {isSubmitting && (
                 <LoaderIcon className="animate mr-2 h-4 w-4 animate-spin" />
               )}
-              Submit
+              Enviar
             </Button>
           </div>
         )}
@@ -178,7 +148,7 @@ FeedbackDialog.Title = function Title() {
   return (
     <div className="flex items-center justify-start p-3">
       <MessageCircleQuestionIcon className="mr-2 h-4 w-4" />
-      <p className="text-base font-medium leading-none">Give feedback</p>
+      <p className="text-base font-medium leading-none">Enviar feedback</p>
     </div>
   )
 }
