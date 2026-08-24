@@ -68,8 +68,8 @@ export default function TrashDialog({ children }: PropsWithChildren) {
         <TrashDialog.Title />
         <div className="px-3 pb-3">
           <Input
-            type="test"
-            placeholder="Type to search page in trash..."
+            type="text"
+            placeholder="Digite para pesquisar uma página na lixeira..."
             className="rounded-xl"
             onChange={onChangeHandler}
             autoFocus={false}
@@ -96,7 +96,7 @@ export default function TrashDialog({ children }: PropsWithChildren) {
 
                 return (
                   <div
-                    title="Click to open"
+                    title="Clique para abrir"
                     key={item.uuid}
                     role="button"
                     className="relative flex h-10 max-w-full items-center gap-x-2 border-b px-3 transition hover:bg-secondary"
@@ -125,7 +125,7 @@ export default function TrashDialog({ children }: PropsWithChildren) {
                       }}
                     >
                       <Button
-                        title="Click to restore"
+                        title="Clique para restaurar"
                         className="h-6 w-6 text-muted-foreground hover:bg-primary/10"
                         variant="ghost"
                         size="icon"
@@ -135,7 +135,7 @@ export default function TrashDialog({ children }: PropsWithChildren) {
                       </Button>
                       <DeleteDialog uuid={item.uuid}>
                         <Button
-                          title="Click to delete"
+                          title="Clique para excluir"
                           className="h-6 w-6 text-muted-foreground hover:bg-primary/10"
                           variant="ghost"
                           size="icon"
@@ -159,7 +159,7 @@ export default function TrashDialog({ children }: PropsWithChildren) {
 
         <DialogClose asChild>
           <Button className="hidden" ref={closeButtonRef}>
-            Close
+            Fechar
           </Button>
         </DialogClose>
       </DialogContent>
@@ -174,7 +174,7 @@ TrashDialog.SearchKeyword = function SearchKeyword(props: {
   if (props.isShow) {
     return (
       <p className="px-3 py-2 text-xs text-muted-foreground">
-        Showing search result for{" "}
+        Resultados da pesquisa por{" "}
         <i className="font-medium text-primary">{props.keyword}</i>
       </p>
     )
@@ -197,7 +197,7 @@ TrashDialog.Title = function Title() {
   return (
     <div className="mb-1 flex items-center justify-start p-3 ">
       <Trash2Icon className="mr-2 h-4 w-4" />
-      <p className="text-base font-medium leading-none">Trash</p>
+      <p className="text-base font-medium leading-none">Lixeira</p>
     </div>
   )
 }
@@ -206,7 +206,7 @@ TrashDialog.Empty = function Empty(props: { isShow: boolean }) {
   if (props.isShow) {
     return (
       <div className="flex h-28 items-center justify-center text-muted-foreground">
-        <p className="text-sm">Empty trash</p>
+        <p className="text-sm">Lixeira vazia</p>
       </div>
     )
   }
@@ -219,8 +219,8 @@ TrashDialog.EmptySearchResult = function EmptySearch(props: {
 }) {
   if (props.isShow) {
     return (
-      <p className="flex h-28  items-center justify-center text-sm text-muted-foreground">
-        No result found for{" "}
+      <p className="flex h-28 items-center justify-center text-sm text-muted-foreground">
+        Nenhum resultado encontrado para{" "}
         <span className="ml-1 max-w-[100px] truncate align-middle font-medium italic text-primary">
           {props.keyword}
         </span>
@@ -248,14 +248,14 @@ TrashDialog.LoadMore = function LoadMore(props: {
             onClick={props.onClickHandler}
           >
             {props.loading && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
-            Load more
+            Carregar mais
           </Button>
         </div>
       )}
 
       {!props.isShowLoadMoreButton && (
         <p className="py-3 text-center align-middle text-xs text-muted-foreground">
-          No more data
+          Não há mais itens
         </p>
       )}
     </>
