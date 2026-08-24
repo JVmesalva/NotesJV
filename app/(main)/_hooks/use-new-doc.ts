@@ -21,7 +21,7 @@ export default function useNewDoc({ emitActionStatus, uuid }: Props) {
   const form = useForm<NewDocSchema>({
     resolver: zodResolver(newDocSchema),
     defaultValues: {
-      title: "Untitled",
+      title: "Sem título",
       emoji: null,
     },
   })
