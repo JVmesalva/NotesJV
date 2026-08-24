@@ -1,52 +1,40 @@
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
 import { useCountdown } from "usehooks-ts"
-import { type SignUpVerifySchema, signUpVerifySchema } from "../_schema"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { useAuthStore } from "@/store/use-auth-store"
 
 export default function useSignUpVerify() {
   const params = useSearchParams()
   const email = params.get("mailto")
-  const { signUpVerifyAsync, resendOtpAsync } = useAuthStore()
-  const router = useRouter()
+  const { resendOtpAsync } = useAuthStore()
+  const [error, setError] = useState<string>()
+  const [isResending, setIsResending] = useState(false)
 
   const [count, { startCountdown }] = useCountdown({
     countStart: 60,
   })
-  const showCountdown = count != 0 && count < 60
-
-  const form = useForm<SignUpVerifySchema>({
-    resolver: zodResolver(signUpVerifySchema),
-    defaultValues: { code: "" },
-  })
-
-  const submitHandler = form.handleSubmit(async ({ code }) => {
-    const res = await signUpVerifyAsync({
-      email: email!,
-      token: code,
-    })
-
-    if (res?.error) form.setError("root.apiError", { message: res.error })
-    else router.replace("/doc")
-  })
+  const showCountdown = count !== 0 && count < 60
 
   const resendHandler = async () => {
-    startCountdown()
-    const res = await resendOtpAsync({ email: email! })
+    if (!email || isResending || showCountdown) return
 
-    if (res?.error) form.setError("root.apiError", { message: res.error })
-    else form.setError("root.apiError", { message: undefined })
+    setIsResending(true)
+    setError(undefined)
+
+    const res = await resendOtpAsync({ email })
+
+    if (res?.error) setError(res.error)
+    else startCountdown()
+
+    setIsResending(false)
   }
 
   return {
-    form,
-    errors: form.formState.errors,
-    isLoadingSubmit: form.formState.isSubmitting,
-    submitHandler,
+    email,
+    error,
+    isResending,
     resendHandler,
     showCountdown,
     count,
-    email,
   }
 }
