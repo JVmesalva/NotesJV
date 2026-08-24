@@ -72,16 +72,10 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
                   ) : (
                     <LockIcon className="mr-2" size={16} />
                   )}
-                  {isLocked ? "Unlock page" : "Lock page"}
+                  {isLocked ? "Desbloquear página" : "Bloquear página"}
                 </span>
 
-                <Switch
-                  checked={isLocked}
-                  id="toggle-lock"
-                  onClick={() => {
-                    toggleLock()
-                  }}
-                />
+                <Switch checked={isLocked} id="toggle-lock" onClick={() => toggleLock()} />
               </label>
             </div>
           </section>
@@ -97,7 +91,7 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
               }}
             >
               <CopyIcon className="mr-2 h-4 w-4" />
-              Copy link
+              Copiar link
             </Button>
 
             {doc && !doc.is_deleted && (
@@ -108,7 +102,7 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
                   disabled={isLocked}
                 >
                   <Trash2Icon className="mr-2 h-4 w-4" />
-                  Move to trash
+                  Mover para a lixeira
                 </Button>
               </MoveToTrashDialog>
             )}
@@ -123,7 +117,7 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
               disabled={!rules.canUndo || isLocked}
             >
               <UndoIcon className="mr-2 h-4 w-4" />
-              Undo
+              Desfazer
             </Button>
             <Button
               size="icon"
@@ -133,21 +127,21 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
               disabled={!rules.canRedo || isLocked}
             >
               <RedoIcon className="mr-2 h-4 w-4" />
-              Redo
+              Refazer
             </Button>
           </section>
 
           <section className="p-3">
             <p className="mb-2 flex flex-col text-muted-foreground">
-              <span className="text-[10px]">Created {createdAt}</span>
+              <span className="text-[10px]">Criado {createdAt}</span>
             </p>
             <p className="flex flex-col text-muted-foreground">
-              <span className="text-[10px]">Last updated {updatedAt}</span>
+              <span className="text-[10px]">Última atualização {updatedAt}</span>
             </p>
           </section>
 
           <PopoverClose hidden>
-            <button ref={ref}>close</button>
+            <button ref={ref}>fechar</button>
           </PopoverClose>
         </div>
       </PopoverContent>
