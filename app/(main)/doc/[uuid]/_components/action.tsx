@@ -29,7 +29,7 @@ export default function Action() {
             disabled={isLocked}
           >
             <SmilePlusIcon className="mr-2 h-4 w-4" />
-            Add icon
+            Adicionar ícone
           </Button>
         </EmojiPickerPopover>
       )}
@@ -47,7 +47,7 @@ export default function Action() {
             disabled={isLocked}
           >
             <ImagePlusIcon className="mr-2 h-4 w-4" />
-            Add cover
+            Adicionar capa
           </Button>
         </ColorGradientDialog>
       )}
