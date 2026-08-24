@@ -47,11 +47,7 @@ export default function NewDocDialog({ children, uuid, emitActionStatus }: Props
             autoComplete="off"
           >
             <EmojiPickerPopover onEmojiSelect={emoji => form.setValue("emoji", emoji)}>
-              <Button
-                variant="outline"
-                size="lg"
-                className="h-11 w-11 shrink-0 rounded-xl p-0"
-              >
+              <Button variant="outline" size="lg" className="h-11 w-11 shrink-0 rounded-xl p-0">
                 {form.getValues("emoji.native") ? (
                   <span className="text-xl">{form.getValues("emoji.native")}</span>
                 ) : (
@@ -68,37 +64,25 @@ export default function NewDocDialog({ children, uuid, emitActionStatus }: Props
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter page title..."
+                      placeholder="Digite o título da página..."
                       className="rounded-xl"
                       autoFocus
                       {...field}
                     />
                   </FormControl>
-
                   <FormMessage className="m-0 px-3 pb-3 pt-0" />
                 </FormItem>
               )}
             />
 
-            <Button
-              size="lg"
-              className="w-20 rounded-xl"
-              type="submit"
-              disabled={isDisableSubmit}
-            >
-              {isLoadingSubmit ? (
-                <LoaderIcon className="h-4 w-4 animate-spin" />
-              ) : (
-                "Create"
-              )}
+            <Button size="lg" className="w-20 rounded-xl" type="submit" disabled={isDisableSubmit}>
+              {isLoadingSubmit ? <LoaderIcon className="h-4 w-4 animate-spin" /> : "Criar"}
             </Button>
           </form>
         </Form>
 
         <DialogClose asChild>
-          <Button className="hidden" ref={closeButtonRef}>
-            Close
-          </Button>
+          <Button className="hidden" ref={closeButtonRef}>Fechar</Button>
         </DialogClose>
       </DialogContent>
     </Dialog>
@@ -109,7 +93,7 @@ NewDocDialog.Title = function Title() {
   return (
     <div className="mb-1 flex items-center justify-start p-3">
       <PlusCircleIcon className="mr-2 h-4 w-4" />
-      <p className="text-base font-medium leading-none">New page</p>
+      <p className="text-base font-medium leading-none">Nova página</p>
     </div>
   )
 }
