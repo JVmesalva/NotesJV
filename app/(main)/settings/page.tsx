@@ -46,7 +46,7 @@ export default function SettingsPage() {
       </ChangeProfileDialog>
 
       <section>
-        <h2 className="mb-2 border-b pb-2 text-xs font-medium ">My setting</h2>
+        <h2 className="mb-2 border-b pb-2 text-xs font-medium ">Minhas configurações</h2>
         <ModeToggle>
           <Button
             size="lg"
@@ -54,24 +54,24 @@ export default function SettingsPage() {
             variant="ghost"
           >
             <div className="flex w-full flex-col items-start">
-              <span className="mb-1 ">Appearance</span>
+              <span className="mb-1 ">Aparência</span>
 
               <span className="block text-left text-xs font-normal text-muted-foreground">
-                Customize how Station looks on your devices
+                Personalize a aparência do Station nos seus dispositivos
               </span>
             </div>
 
             <span className="flex h-10 shrink-0 items-start justify-center rounded-md">
               <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only ">Toggle theme</span>
+              <span className="sr-only ">Alterar tema</span>
             </span>
           </Button>
         </ModeToggle>
       </section>
 
       <section>
-        <h2 className="mb-2 border-b pb-2 text-xs font-medium">Accounts security</h2>
+        <h2 className="mb-2 border-b pb-2 text-xs font-medium">Segurança da conta</h2>
 
         <ChangeEmailDialog>
           <Button
@@ -80,7 +80,7 @@ export default function SettingsPage() {
             variant="ghost"
           >
             <div className="mb-1 flex w-full justify-between align-baseline">
-              <span>Email</span>
+              <span>E-mail</span>
               <EditIcon className="h-4 w-4" />
             </div>
             <span className="block text-left text-xs font-normal text-muted-foreground">
@@ -96,18 +96,18 @@ export default function SettingsPage() {
             variant="ghost"
           >
             <div className="mb-1 flex w-full justify-between align-baseline">
-              <span>Password</span>
+              <span>Senha</span>
               <EditIcon className="h-4 w-4" />
             </div>
             <span className="block text-left text-xs font-normal text-muted-foreground">
-              Set a permanent password to login to your account.
+              Defina uma senha permanente para entrar na sua conta.
             </span>
           </Button>
         </ChangePasswordDialog>
       </section>
 
       <section>
-        <h2 className="mb-2 border-b pb-2 text-xs font-medium">Support</h2>
+        <h2 className="mb-2 border-b pb-2 text-xs font-medium">Suporte</h2>
 
         <SignOutDialog scope="others">
           <Button
@@ -116,11 +116,11 @@ export default function SettingsPage() {
             variant="ghost"
           >
             <div className="mb-1 flex w-full justify-between align-baseline">
-              <span>Log out from other devices</span>
+              <span>Sair dos outros dispositivos</span>
               <ChevronRightIcon className="h-4 w-4" />
             </div>
             <span className="block max-w-[80%] text-left text-xs font-normal text-muted-foreground">
-              Log out of all other active sessions on other devices besides this one
+              Encerre todas as outras sessões ativas, exceto esta
             </span>
           </Button>
         </SignOutDialog>
@@ -131,11 +131,11 @@ export default function SettingsPage() {
           variant="ghost"
         >
           <div className="mb-1 flex w-full justify-between align-baseline">
-            <span className="text-destructive">Delete my account</span>
+            <span className="text-destructive">Excluir minha conta</span>
             <ChevronRightIcon className="h-4 w-4" />
           </div>
           <span className="block text-left text-xs font-normal text-muted-foreground">
-            Permanently delete the account
+            Excluir permanentemente a conta
           </span>
         </Button>
       </section>
