@@ -1,23 +1,20 @@
 import { createClient } from "@/lib/supabase/server"
 import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
+
 export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams
-  const code = searchParams.get("code") as string
+  const code = req.nextUrl.searchParams.get("code")
+  const successUrl = new URL("/doc", req.nextUrl.origin)
+  const failureUrl = new URL("/login", req.nextUrl.origin)
 
-  const cookiesStore = cookies()
-  const server = createClient(cookiesStore)
+  if (!code) return NextResponse.redirect(failureUrl)
 
-  try {
-    const { data, error } = await server.auth.exchangeCodeForSession(code)
+  const server = createClient(cookies())
+  const { data, error } = await server.auth.exchangeCodeForSession(code)
 
-    if (data)
-      return NextResponse.redirect(new URL("/doc", process.env.NEXT_PUBLIC_APP_URL))
+  if (!error && data.session) return NextResponse.redirect(successUrl)
 
-    throw new Error(error?.message)
-  } catch (error) {
-    return NextResponse.redirect(new URL("/login", process.env.NEXT_PUBLIC_APP_URL))
-  }
+  return NextResponse.redirect(failureUrl)
 }
