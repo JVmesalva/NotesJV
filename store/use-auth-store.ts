@@ -3,6 +3,15 @@ import { client } from "@/lib/supabase/client"
 import { type Provider } from "@supabase/supabase-js"
 import { create } from "zustand"
 
+const getAuthCallbackUrl = () => {
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL
+
+  if (!origin) throw new Error("Undefined callback url!")
+
+  return `${origin.replace(/\/$/, "")}/api/v1/oauth/callback`
+}
+
 type AuthAction = {
   resetPasswordAsync(email: string): Promise<{ error: string } | void>
   resetPasswordVerifyAsync(
@@ -25,7 +34,7 @@ type AuthAction = {
 export const useAuthStore = create<AuthAction>()(() => ({
   async resetPasswordAsync(email) {
     try {
-      const { error, data } = await client.auth.resetPasswordForEmail(email)
+      const { error } = await client.auth.resetPasswordForEmail(email)
 
       if (error) throw new Error(error.message)
     } catch (error) {
@@ -34,14 +43,13 @@ export const useAuthStore = create<AuthAction>()(() => ({
   },
   async resetPasswordVerifyAsync(token, email) {
     try {
-      const { data, error } = await client.auth.verifyOtp({
+      const { error } = await client.auth.verifyOtp({
         email,
         token,
         type: "recovery",
       })
 
       if (error) {
-        // rate limit error
         if (error.status === 429) throw new Error("")
         throw new Error(error.message)
       }
@@ -51,7 +59,7 @@ export const useAuthStore = create<AuthAction>()(() => ({
   },
   async loginAsync(opt) {
     try {
-      const { data, error } = await client.auth.signInWithPassword(opt)
+      const { error } = await client.auth.signInWithPassword(opt)
       if (!error) return
 
       const isNeedConfirmEmail = error.message.toLowerCase() === "email not confirmed"
@@ -74,14 +82,17 @@ export const useAuthStore = create<AuthAction>()(() => ({
   },
   async signUpAsync(opt) {
     try {
-      const { data, error } = await client.auth.signUp(opt)
+      const { data, error } = await client.auth.signUp({
+        ...opt,
+        options: {
+          emailRedirectTo: getAuthCallbackUrl(),
+        },
+      })
+
       if (!error) {
-        // Currently the response of signUp returns a fake user object instead of an error.
-        // For now we check the identities object which would be empty if a user already exits.
         const isEmailTaken = data.user?.identities?.length === 0
         if (isEmailTaken) throw new Error("Email already in use")
       } else {
-        // rate limit error
         if (error.status === 429) throw new Error("")
         throw new Error(error.message)
       }
@@ -91,13 +102,9 @@ export const useAuthStore = create<AuthAction>()(() => ({
   },
   async signUpWithOauth(opt) {
     try {
-      const redirectTo = `${process.env.NEXT_PUBLIC_APP_URL}/api/v1/oauth/callback`
-
-      if (!redirectTo) throw new Error("Undefined callback url!")
-
-      const { data, error } = await client.auth.signInWithOAuth({
+      const { error } = await client.auth.signInWithOAuth({
         provider: opt.provider,
-        options: { redirectTo },
+        options: { redirectTo: getAuthCallbackUrl() },
       })
 
       if (error) throw new Error(error.message)
@@ -107,10 +114,9 @@ export const useAuthStore = create<AuthAction>()(() => ({
   },
   async signUpVerifyAsync(opt) {
     try {
-      const { data, error } = await client.auth.verifyOtp({ ...opt, type: "email" })
+      const { error } = await client.auth.verifyOtp({ ...opt, type: "email" })
       if (!error) return
 
-      // rate limit error
       if (error.status === 429) throw new Error("")
       throw new Error(error.message)
     } catch (error) {
@@ -119,10 +125,15 @@ export const useAuthStore = create<AuthAction>()(() => ({
   },
   async resendOtpAsync(opt) {
     try {
-      const { error, data } = await client.auth.resend({ type: "signup", ...opt })
+      const { error } = await client.auth.resend({
+        type: "signup",
+        ...opt,
+        options: {
+          emailRedirectTo: getAuthCallbackUrl(),
+        },
+      })
 
       if (error) {
-        // rate limit error
         if (error.status === 429) throw new Error("")
         throw new Error(error.message)
       }
