@@ -26,7 +26,7 @@ export default function SidebarMenu() {
           className="h-8 justify-start px-3 font-normal text-primary/70 hover:bg-primary/5"
         >
           <SearchIcon className="mr-3 h-4 w-4" />
-          Search
+          Pesquisar
         </Button>
       </SearchDialog>
 
@@ -36,7 +36,7 @@ export default function SidebarMenu() {
           className="h-8 justify-start px-3 font-normal text-primary/70 hover:bg-primary/5"
         >
           <Trash2Icon className="mr-3 h-4 w-4" />
-          Trash
+          Lixeira
         </Button>
       </TrashDialog>
 
@@ -46,7 +46,7 @@ export default function SidebarMenu() {
         onClick={() => navigateHandler("doc")}
       >
         <HomeIcon className="mr-3 h-4 w-4" />
-        Home
+        Início
       </Button>
 
       <NewDocDialog>
@@ -55,7 +55,7 @@ export default function SidebarMenu() {
           className="h-8 justify-start px-3 font-normal text-primary/70 hover:bg-primary/5"
         >
           <PlusCircleIcon className="mr-3 h-4 w-4" />
-          New Page
+          Nova página
         </Button>
       </NewDocDialog>
     </div>
