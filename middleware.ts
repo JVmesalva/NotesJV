@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { createClient } from "./lib/supabase/middleware"
+import { appUrl } from "./lib/supabase/config"
 
 const protectedRoutes = ["/doc", "/reset-password", "/settings"]
 const privateRoutes = ["/login", "/signup", "/forget-password"]
@@ -14,11 +15,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (!data.session && protectedRoutes.some(r => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL("/login", process.env.NEXT_PUBLIC_APP_URL))
+    return NextResponse.redirect(new URL("/login", appUrl))
   }
 
   if (data.session && privateRoutes.some(r => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL("/doc", process.env.NEXT_PUBLIC_APP_URL))
+    return NextResponse.redirect(new URL("/doc", appUrl))
   }
 
   return response
