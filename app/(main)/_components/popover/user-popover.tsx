@@ -67,7 +67,7 @@ export default function UserPopover({ children, fullname, username }: Props) {
                 className="h-8 w-full justify-start px-2 text-xs font-normal"
               >
                 <MessageCircleQuestionIcon className="mr-3 h-4 w-4" />
-                Give feedback
+                Enviar feedback
               </Button>
             </FeedbackDialog>
 
@@ -77,7 +77,7 @@ export default function UserPopover({ children, fullname, username }: Props) {
               onClick={() => navigateHandler("settings")}
             >
               <Settings2Icon className="mr-3 h-4 w-4" />
-              Settings
+              Configurações
             </Button>
 
             <SignOutDialog>
@@ -86,13 +86,13 @@ export default function UserPopover({ children, fullname, username }: Props) {
                 className="h-8 w-full justify-start px-2 text-xs font-normal"
               >
                 <LogOutIcon className="mr-3 h-4 w-4" />
-                Log out
+                Sair
               </Button>
             </SignOutDialog>
           </section>
 
           <PopoverClose hidden>
-            <button ref={ref}>close</button>
+            <button ref={ref}>fechar</button>
           </PopoverClose>
         </div>
       </PopoverContent>
