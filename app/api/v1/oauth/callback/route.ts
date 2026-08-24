@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { appUrl } from "@/lib/supabase/config"
 import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -6,8 +7,8 @@ export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code")
-  const successUrl = new URL("/doc", req.nextUrl.origin)
-  const failureUrl = new URL("/login", req.nextUrl.origin)
+  const successUrl = new URL("/doc", appUrl)
+  const failureUrl = new URL("/login", appUrl)
 
   if (!code) return NextResponse.redirect(failureUrl)
 
