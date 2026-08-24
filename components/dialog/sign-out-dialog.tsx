@@ -20,9 +20,9 @@ export default function SignOutDialog({
 }: PropsWithChildren & SignOut) {
   const { signOutAsync } = useUserStore()
   const title = {
-    local: "Are you sure, do you want to log out?",
-    global: "Are you sure, do you want to log out from all logged device?",
-    others: "Are you sure, do you want to log out from other logged device?",
+    local: "Tem certeza de que deseja sair?",
+    global: "Tem certeza de que deseja sair de todos os dispositivos?",
+    others: "Tem certeza de que deseja sair dos outros dispositivos?",
   }
 
   return (
@@ -43,7 +43,7 @@ export default function SignOutDialog({
             className="flex-1 rounded-none rounded-bl-xl text-destructive hover:text-destructive"
             onClick={() => signOutAsync(scope)}
           >
-            Yes
+            Sim
           </Button>
           <div className="!m-0 box-border h-full w-[1px] border-r p-0" />
           <DialogClose asChild className="!m-0">
@@ -53,7 +53,7 @@ export default function SignOutDialog({
               className="flex-1 rounded-none rounded-br-xl "
               variant="ghost"
             >
-              No
+              Não
             </Button>
           </DialogClose>
         </DialogFooter>
