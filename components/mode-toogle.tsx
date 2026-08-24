@@ -1,6 +1,6 @@
 "use client"
 
-import { ComputerIcon, Moon, MoonIcon, Sun, SunIcon } from "lucide-react"
+import { ComputerIcon, MoonIcon, SunIcon } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import {
@@ -21,15 +21,15 @@ export default function ModeToggle({ children }: PropsWithChildren) {
       <DropdownMenuContent align="end" side="bottom" sideOffset={-26}>
         <DropdownMenuItem onClick={() => setTheme("light")}>
           <SunIcon size={14} className="mr-2" />
-          <span>Light</span>
+          <span>Claro</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           <MoonIcon size={14} className="mr-2" />
-          Dark
+          Escuro
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
           <ComputerIcon size={14} className="mr-2" />
-          System
+          Sistema
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
