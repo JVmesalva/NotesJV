@@ -1,16 +1,10 @@
 import { getErrorMessage } from "@/helper/error.helper"
 import { client } from "@/lib/supabase/client"
+import { appUrl } from "@/lib/supabase/config"
 import { type Provider } from "@supabase/supabase-js"
 import { create } from "zustand"
 
-const getAuthCallbackUrl = () => {
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL
-
-  if (!origin) throw new Error("Undefined callback url!")
-
-  return `${origin.replace(/\/$/, "")}/api/v1/oauth/callback`
-}
+const getAuthCallbackUrl = () => `${appUrl}/api/v1/oauth/callback`
 
 type AuthAction = {
   resetPasswordAsync(email: string): Promise<{ error: string } | void>
