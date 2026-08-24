@@ -2,25 +2,12 @@
 
 import ErrorBlock from "@/components/error-block"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { LoaderIcon, MailCheckIcon } from "lucide-react"
-import { useSearchParams } from "next/navigation"
 import useSignUpVerify from "./_hooks/use-signup-verify"
 
 export default function SignUpVerifyPage() {
-  const params = useSearchParams()
-  const email = params.get("mailto")
-  const {
-    errors,
-    form,
-    isLoadingSubmit,
-    resendHandler,
-    showCountdown,
-    submitHandler,
-    count,
-  } = useSignUpVerify()
+  const { email, error, isResending, resendHandler, showCountdown, count } = useSignUpVerify()
 
   return (
     <>
@@ -29,49 +16,17 @@ export default function SignUpVerifyPage() {
       <h1 className="mb-2 text-2xl font-bold md:text-3xl">Check your email</h1>
 
       <p className="mb-8 w-full text-center text-sm">
-        To complete your signup, we&apos;ve sent the verification code to{" "}
-        <strong>{email}</strong> to verify your email.
+        To complete your signup, open the confirmation link we sent to{" "}
+        {email ? <strong>{email}</strong> : "your email address"}. After confirming, you&apos;ll be
+        redirected back to JV Notes automatically.
       </p>
 
-      <Form {...form}>
-        <form
-          onSubmit={submitHandler}
-          className="flex w-full flex-col gap-y-3"
-          autoComplete="off"
-        >
-          <FormField
-            control={form.control}
-            name="code"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="Enter the verification code..."
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
+      <ErrorBlock message={error} />
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button size="lg" className="w-full" type="submit" disabled={isLoadingSubmit}>
-            {isLoadingSubmit && (
-              <LoaderIcon className="animate mr-2 h-4 w-4 animate-spin" />
-            )}
-            Verify Email
-          </Button>
-
-          <ErrorBlock message={errors.root?.apiError.message} />
-        </form>
-      </Form>
-
-      <hr className="my-8 w-full " />
+      <hr className="my-8 w-full" />
 
       <div className="w-full text-left text-sm">
-        <p className="mb-2 font-medium">Didn&apos;t receive email ?</p>
+        <p className="mb-2 font-medium">Didn&apos;t receive the email?</p>
         <ol className="list-inside list-disc">
           <li>Check your spam or junk folder.</li>
           <li>
@@ -79,13 +34,11 @@ export default function SignUpVerifyPage() {
               variant="link-blue"
               className={cn("h-auto p-0", showCountdown && "no-underline")}
               onClick={resendHandler}
-              disabled={showCountdown}
+              disabled={!email || showCountdown || isResending}
             >
-              {showCountdown
-                ? `Resend verification code again in (${count}s)`
-                : !showCountdown && "Click here"}
+              {isResending && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
+              {showCountdown ? `Resend confirmation email in (${count}s)` : "Resend email"}
             </Button>
-            {!showCountdown && ` to resend the verification code.`}
           </li>
         </ol>
       </div>
