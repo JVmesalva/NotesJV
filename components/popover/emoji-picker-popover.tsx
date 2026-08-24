@@ -53,6 +53,7 @@ export default function EmojiPickerPopover({
                 className="h-auto p-1 text-xs font-normal"
                 variant="secondary"
                 onClick={onClickRemove}
+                title="Remover emoji"
               >
                 <Trash2Icon className="h-4 w-4" />
               </Button>
@@ -61,6 +62,7 @@ export default function EmojiPickerPopover({
 
           <Picker
             data={data}
+            locale="pt"
             onEmojiSelect={onEmojiSelect}
             searchPosition="none"
             theme={th}
