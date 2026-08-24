@@ -11,7 +11,6 @@ import {
   FormInputIcon,
   LockIcon,
   PlusCircleIcon,
-  StarIcon,
   Trash2Icon,
 } from "lucide-react"
 import React, { PropsWithChildren, useRef } from "react"
@@ -71,17 +70,9 @@ export default function SidebarMoreMenuPopover({
                 className="h-8 w-full items-center justify-start px-2 text-xs font-normal"
               >
                 <PlusCircleIcon className="mr-2 h-4 w-4" />
-                Add new page
+                Adicionar nova página
               </Button>
             </NewDocDialog>
-
-            {/* <Button
-              variant="ghost"
-              className="h-8 w-full items-center justify-start px-2 text-xs font-normal"
-            >
-              <StarIcon className="mr-2 h-4 w-4" />
-              Add to favorite
-            </Button> */}
 
             <Button
               size="icon"
@@ -93,7 +84,7 @@ export default function SidebarMoreMenuPopover({
               }}
             >
               <CopyIcon className="mr-2 h-4 w-4" />
-              Copy link
+              Copiar link
             </Button>
 
             <MoveToTrashDialog uuid={uuid} emitActionStatus={emitActionStatusHandler}>
@@ -103,7 +94,7 @@ export default function SidebarMoreMenuPopover({
                 disabled={!!is_locked}
               >
                 <Trash2Icon className="mr-2 h-4 w-4" />
-                Move to trash
+                Mover para a lixeira
               </Button>
             </MoveToTrashDialog>
 
@@ -117,7 +108,7 @@ export default function SidebarMoreMenuPopover({
               }}
             >
               <AppWindowIcon className="mr-2 h-4 w-4" />
-              Open in new tab
+              Abrir em nova aba
             </Button>
 
             {!is_locked && (
@@ -127,7 +118,7 @@ export default function SidebarMoreMenuPopover({
                   className="h-8 w-full items-center justify-start px-2 text-xs font-normal"
                 >
                   <FormInputIcon className="mr-2 h-4 w-4" />
-                  Rename
+                  Renomear
                 </Button>
               </RenameDialog>
             )}
@@ -139,7 +130,7 @@ export default function SidebarMoreMenuPopover({
                 disabled
               >
                 <FormInputIcon className="mr-2 h-4 w-4" />
-                Rename
+                Renomear
               </Button>
             )}
           </section>
@@ -147,7 +138,7 @@ export default function SidebarMoreMenuPopover({
           {is_locked && (
             <section className="border-b p-3">
               <p className="flex items-center justify-between gap-x-2 text-xs text-sky-800 dark:text-sky-600">
-                Page is locked
+                Página bloqueada
                 <LockIcon size={14} />
               </p>
             </section>
@@ -155,15 +146,15 @@ export default function SidebarMoreMenuPopover({
 
           <section className="p-3">
             <p className="mb-2 flex flex-col text-muted-foreground">
-              <span className="text-[10px]">Created {createdAt}</span>
+              <span className="text-[10px]">Criada {createdAt}</span>
             </p>
             <p className="flex flex-col text-muted-foreground">
-              <span className="text-[10px]">Last updated {updatedAt}</span>
+              <span className="text-[10px]">Atualizada {updatedAt}</span>
             </p>
           </section>
 
           <PopoverClose hidden>
-            <button ref={ref}>close</button>
+            <button ref={ref}>fechar</button>
           </PopoverClose>
         </div>
       </PopoverContent>
