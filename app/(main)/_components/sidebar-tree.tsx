@@ -38,7 +38,6 @@ export default function SidebarTree({ uuid, level = 0 }: Props) {
     getSidebarTreeAsync(uuid)
   })
 
-  // first loading at root level
   if (loading["root"] && !sidebarTree && !uuid) {
     return <SidebarTree.Skeleton level={level} />
   }
@@ -76,9 +75,7 @@ export default function SidebarTree({ uuid, level = 0 }: Props) {
                 navigateDocHandler(item.uuid)
               }}
               className="group flex h-8 w-full cursor-pointer items-center justify-between rounded-md pr-1 transition hover:bg-primary/5"
-              style={{
-                paddingLeft: level === 0 ? "4px" : `${level * 20}px`,
-              }}
+              style={{ paddingLeft: level === 0 ? "4px" : `${level * 20}px` }}
             >
               <div className="flex items-center justify-start truncate">
                 <span
@@ -100,11 +97,7 @@ export default function SidebarTree({ uuid, level = 0 }: Props) {
                 </span>
 
                 {emoji?.native ? (
-                  <span
-                    role="img"
-                    aria-label={emoji?.name}
-                    className="mr-2 block w-4 text-sm antialiased"
-                  >
+                  <span role="img" aria-label={emoji?.name} className="mr-2 block w-4 text-sm antialiased">
                     {emoji.native}
                   </span>
                 ) : (
@@ -142,9 +135,7 @@ export default function SidebarTree({ uuid, level = 0 }: Props) {
               </SidebarMoreMenuPopover>
             </div>
 
-            {collapsedMap.has(item.uuid) && (
-              <SidebarTree uuid={item.uuid} level={level + 1} />
-            )}
+            {collapsedMap.has(item.uuid) && <SidebarTree uuid={item.uuid} level={level + 1} />}
           </section>
         )
       })}
@@ -156,14 +147,14 @@ type LevelProps = { level: number }
 
 SidebarTree.Title = function Title({ level }: LevelProps) {
   if (level > 0) return null
-  return <h2 className="mb-1 px-3 pt-3 text-xs text-muted-foreground">Personal</h2>
+  return <h2 className="mb-1 px-3 pt-3 text-xs text-muted-foreground">Pessoal</h2>
 }
 
 SidebarTree.Skeleton = function Loading({ level }: LevelProps) {
   return (
     <div className={cn(level === 0 ? "pt-3" : "pt-1")}>
       {level === 0 && (
-        <h2 className="mb-2 px-3 text-xs text-muted-foreground">Personal</h2>
+        <h2 className="mb-2 px-3 text-xs text-muted-foreground">Pessoal</h2>
       )}
 
       {Array(level === 0 ? 4 : 1)
@@ -182,8 +173,8 @@ SidebarTree.Empty = function Empty({ level }: LevelProps) {
     level === 0 ? "13px" : level === 1 ? `${level * 30}px` : `${level * 22}px`
 
   return (
-    <div className={"py-1 text-xs text-muted-foreground"} style={{ paddingLeft }}>
-      No page inside
+    <div className="py-1 text-xs text-muted-foreground" style={{ paddingLeft }}>
+      Nenhuma página dentro
     </div>
   )
 }
