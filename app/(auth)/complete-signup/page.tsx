@@ -2,16 +2,10 @@ import React from "react"
 import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import FullScreenLoading from "@/components/full-screen-loading"
-import dynamic from "next/dynamic"
-
-const CompleteSignUpPage = dynamic(() => import("./complete-signup"), {
-  loading: () => <FullScreenLoading />,
-  ssr: false,
-})
+import CompleteSignUpPage from "./complete-signup"
 
 export default async function CompleteSignUpRootPage() {
-  const cookiesStore = cookies()
+  const cookiesStore = await cookies()
   const server = createClient(cookiesStore)
 
   const { data: profile } = await server
@@ -19,7 +13,7 @@ export default async function CompleteSignUpRootPage() {
     .select("username, fullname")
     .single()
 
-  if (profile?.fullname && profile?.username) return redirect("/doc")
+  if (profile?.fullname && profile?.username) return redirect("/")
 
   return <CompleteSignUpPage />
 }
