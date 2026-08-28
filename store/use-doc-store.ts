@@ -25,7 +25,7 @@ type DocAction = {
   updateDocAsync(
     uuid: string,
     doc: Partial<Pick<Page, "content" | "description" | "emoji" | "image_url" | "title">>,
-  ): Promise<void>
+  ): Promise<boolean>
   docRealtimeHandler(opt: {
     eventType: `${REALTIME_POSTGRES_CHANGES_LISTEN_EVENT}`
     doc: Page
@@ -86,7 +86,6 @@ export const useDocStore = create<DocState & DocAction>()((set, get) => ({
   _deleteDoc(id) {
     const oldDoc = get().doc
     if (oldDoc && id && oldDoc.id === id) {
-      // permanently delete opened page, reset doc state
       set({ ...initialState })
     }
   },
@@ -94,7 +93,6 @@ export const useDocStore = create<DocState & DocAction>()((set, get) => ({
     const oldDoc = get().doc
     if (!oldDoc || oldDoc.uuid !== doc.uuid) return
 
-    // Todo: handle CDRT, https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type
     console.log("saved to db =>", doc)
     set({ doc })
   },
@@ -123,14 +121,13 @@ export const useDocStore = create<DocState & DocAction>()((set, get) => ({
     try {
       set({
         saveStatus: "start",
-        // optimistic update
         doc: {
           ...get().doc,
           ...(doc as Page),
         },
       })
 
-      const { data, error } = await client
+      const { error } = await client
         .from("pages")
         .update({
           ...get().failedSaveData,
@@ -147,6 +144,7 @@ export const useDocStore = create<DocState & DocAction>()((set, get) => ({
         saveStatus: "success",
         failedSaveData: {},
       })
+      return true
     } catch (error) {
       set({
         saveStatus: "failed",
@@ -157,6 +155,7 @@ export const useDocStore = create<DocState & DocAction>()((set, get) => ({
         description:
           "Something went wrong. Please check your internet connection & try again.",
       })
+      return false
     }
   },
 }))
