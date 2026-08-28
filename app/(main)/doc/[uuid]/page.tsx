@@ -2,14 +2,18 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useDocStore } from "@/store/use-doc-store"
+import dynamic from "next/dynamic"
 import { useParams } from "next/navigation"
 import { useEffectOnce } from "usehooks-ts"
 import Action from "./_components/action"
 import Cover from "./_components/cover"
 import Title from "./_components/title"
-import Editor from "./_components/editor"
 import Deleted from "./_components/deleted"
 import Locked from "./_components/locked"
+
+const Editor = dynamic(() => import("./_components/editor"), {
+  ssr: false,
+})
 
 export default function DocDetailPage() {
   const params = useParams()

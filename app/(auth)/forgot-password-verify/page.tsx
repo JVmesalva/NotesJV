@@ -1,19 +1,14 @@
-import FullScreenLoading from "@/components/full-screen-loading"
-import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
 import { emailSchema } from "./_schema"
-
-const ForgotPasswordVerifyPage = dynamic(() => import("./forgot-password-verify"), {
-  loading: () => <FullScreenLoading />,
-  ssr: false,
-})
+import ForgotPasswordVerifyPage from "./forgot-password-verify"
 
 type Props = {
-  searchParams: { mailto: string }
+  searchParams: Promise<{ mailto?: string }>
 }
 
-export default function ForgotPasswordVerifyRootPage({ searchParams }: Props) {
-  const email = emailSchema.safeParse(searchParams.mailto)
+export default async function ForgotPasswordVerifyRootPage({ searchParams }: Props) {
+  const params = await searchParams
+  const email = emailSchema.safeParse(params.mailto)
 
   if (!email.success) return redirect("/forgot-password")
 
