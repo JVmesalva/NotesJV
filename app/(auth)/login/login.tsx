@@ -11,90 +11,104 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import InputPassword from "@/components/form/input-password"
 import { LoaderIcon } from "lucide-react"
 import Link from "next/link"
-import Footer from "../_components/footer"
-import { GoogleButton } from "../_components/oauth-button"
 import { useLogin } from "./_hooks/use-login"
-import { useAuthStore } from "@/store/use-auth-store"
-import InputPassword from "@/components/form/input-password"
 
 export default function LoginPage() {
   const { errors, form, isLoadingSubmit, submitHandler } = useLogin()
-  const { signUpWithOauth } = useAuthStore()
 
   return (
-    <>
-      <h1 className="mb-8 text-3xl font-bold md:text-4xl">Log in</h1>
-
-      <GoogleButton clickHandler={() => signUpWithOauth({ provider: "google" })} />
-
-      <hr className="my-8 w-full" />
-
-      <Form {...form}>
-        <form
-          onSubmit={submitHandler}
-          className="flex w-full flex-col gap-y-3"
-          autoComplete="off"
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter your email address..."
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <InputPassword error={fieldState.error} field={field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button size="lg" className="w-full" type="submit" disabled={isLoadingSubmit}>
-            {isLoadingSubmit && (
-              <LoaderIcon className="animate mr-2 h-4 w-4 animate-spin" />
-            )}
-            Continue
-          </Button>
-
-          <ErrorBlock message={errors.root?.apiError.message} />
-
-          <Button variant="link-blue" className="mt-5 h-auto p-0 font-normal" asChild>
-            <Link href="/forgot-password">Forgot password?</Link>
-          </Button>
-
-          <div className="flex justify-center gap-x-1 text-sm">
-            <p>Don&apos;t have an account?</p>
-
-            <Button variant="link-blue" className="h-auto p-0 font-normal" asChild>
-              <Link href="/signup">Sign up here</Link>
-            </Button>
+    <div className="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto bg-background px-6 py-10 text-primary">
+      <div className="w-full max-w-[420px]">
+        <main className="w-full rounded-[18px] border border-border bg-background p-6 shadow-sm sm:p-7">
+          <div className="mb-6 flex items-center">
+            <span className="text-lg font-bold tracking-tight">JV notes</span>
           </div>
-        </form>
-      </Form>
 
-      <Footer />
-    </>
+          <h1 className="m-0 text-[26px] font-extrabold leading-tight">Entrar</h1>
+          <p className="mb-6 mt-2 text-sm leading-relaxed text-muted-foreground">
+            Acesse suas notas pessoais.
+          </p>
+
+          <Form {...form}>
+            <form
+              onSubmit={submitHandler}
+              className="grid w-full gap-4"
+              autoComplete="off"
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-sm font-bold">E-mail</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="seu@email.com"
+                        type="email"
+                        autoComplete="email"
+                        className="h-11 rounded-[10px] bg-background px-3"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field, fieldState }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-sm font-bold">Senha</FormLabel>
+                    <FormControl>
+                      <InputPassword error={fieldState.error} field={field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="-mt-1 flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-[13px] text-muted-foreground transition-colors hover:text-primary"
+                >
+                  Esqueci minha senha
+                </Link>
+              </div>
+
+              <ErrorBlock message={errors.root?.apiError.message} />
+
+              <Button
+                size="lg"
+                className="h-11 w-full rounded-[10px] font-extrabold"
+                type="submit"
+                disabled={isLoadingSubmit}
+              >
+                {isLoadingSubmit && (
+                  <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {isLoadingSubmit ? "Aguarde…" : "Entrar"}
+              </Button>
+            </form>
+          </Form>
+
+          <Link
+            href="/signup"
+            className="mt-4 block w-full py-2 text-center text-xs font-semibold text-muted-foreground transition-colors hover:text-primary"
+          >
+            Cadastrar
+          </Link>
+        </main>
+      </div>
+
+      <div className="pointer-events-none fixed bottom-3 left-4 right-4 text-center text-[11px] leading-relaxed text-muted-foreground/70">
+        Site pessoal de notas online · Uso educacional
+      </div>
+    </div>
   )
 }
