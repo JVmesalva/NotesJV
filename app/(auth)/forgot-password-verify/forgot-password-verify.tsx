@@ -11,30 +11,30 @@ export default function ForgotPasswordVerifyPage() {
 
   return (
     <>
-      <MailCheckIcon className="mb-3 h-20 w-20" />
-      <h1 className="mb-8 text-3xl font-bold md:text-4xl">Confira seu e-mail</h1>
-      <p className="mb-3 w-full text-left text-sm">
-        Enviamos um link de redefinição de senha para <strong>{email}</strong>.
+      <MailCheckIcon className="mb-4 h-14 w-14" />
+      <h1 className="m-0 text-[26px] font-extrabold leading-tight">Confira seu e-mail</h1>
+      <p className="mb-3 mt-2 text-sm leading-relaxed text-muted-foreground">
+        Enviamos um link de redefinição de senha para{" "}
+        <strong className="text-primary">{email || "seu e-mail"}</strong>.
       </p>
-      <p className="w-full text-left text-sm text-muted-foreground">
-        Abra a mensagem e clique em <strong>Reset password</strong>. O link levará você de
-        volta ao JV Notes para escolher uma nova senha.
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        Abra a mensagem e clique no link de redefinição. Você voltará ao JV Notes para criar
+        uma nova senha.
       </p>
 
-      <hr className="my-8 w-full" />
-
-      <div className="flex w-full flex-col gap-3 text-sm">
-        <p className="text-muted-foreground">
+      <div className="mt-5 border-t border-border pt-5">
+        <p className="mb-4 text-sm text-muted-foreground">
           Se a mensagem não aparecer, verifique as pastas de spam ou lixo eletrônico.
         </p>
 
-        <Button variant="outline" className="w-full" asChild>
-          <Link href="/forgot-password">Usar outro e-mail</Link>
-        </Button>
-
-        <Button variant="link" className="w-full" asChild>
-          <Link href="/login">Voltar para entrar</Link>
-        </Button>
+        <div className="grid gap-2">
+          <Button variant="outline" className="w-full" asChild>
+            <Link href="/forgot-password">Usar outro e-mail</Link>
+          </Button>
+          <Button variant="ghost" className="w-full" asChild>
+            <Link href="/login">Voltar para entrar</Link>
+          </Button>
+        </div>
       </div>
     </>
   )
