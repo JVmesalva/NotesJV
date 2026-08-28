@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { LoaderIcon } from "lucide-react"
-import React from "react"
 import { useCompleteProfile } from "./_hooks/use-complete-profile"
 
 export default function CompleteSignUpPage() {
@@ -20,30 +19,29 @@ export default function CompleteSignUpPage() {
 
   return (
     <>
-      <h1 className="mb-3 w-full text-left text-2xl font-bold md:text-3xl">
-        Complete your profile
-      </h1>
-      <p className="mb-8 w-full  text-left">
-        Please, fill this form down below to continue using{" "}
-        <span className="font-bold underline">Station.</span>
+      <h1 className="m-0 text-[26px] font-extrabold leading-tight">Complete seu perfil</h1>
+      <p className="mb-6 mt-2 text-sm leading-relaxed text-muted-foreground">
+        Informe como você deseja aparecer dentro do JV Notes. O nome de usuário é apenas do
+        perfil e não substitui o login por e-mail.
       </p>
 
       <Form {...form}>
-        <form
-          onSubmit={submitHandler}
-          className="flex w-full flex-col gap-y-3"
-          autoComplete="off"
-        >
+        <form onSubmit={submitHandler} className="grid w-full gap-4" autoComplete="off">
           <FormField
             control={form.control}
             name="fullname"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-bold">Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your name..." type="text" {...field} />
+                  <Input
+                    placeholder="Seu nome"
+                    type="text"
+                    autoComplete="name"
+                    className="h-11 rounded-[10px] bg-background px-3"
+                    {...field}
+                  />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -53,12 +51,17 @@ export default function CompleteSignUpPage() {
             control={form.control}
             name="username"
             render={({ field }) => (
-              <FormItem className="mb-2">
-                <FormLabel>Username</FormLabel>
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-bold">Nome de usuário</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your username..." type="text" {...field} />
+                  <Input
+                    placeholder="ex.: joaovictor"
+                    type="text"
+                    autoComplete="username"
+                    className="h-11 rounded-[10px] bg-background px-3"
+                    {...field}
+                  />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -66,11 +69,14 @@ export default function CompleteSignUpPage() {
 
           <ErrorBlock className="m-0" message={errors.root?.apiError.message} />
 
-          <Button size="lg" className="w-full" type="submit" disabled={isLoadingSubmit}>
-            {isLoadingSubmit && (
-              <LoaderIcon className="animate mr-2 h-4 w-4 animate-spin" />
-            )}
-            Submit
+          <Button
+            size="lg"
+            className="h-11 w-full rounded-[10px] font-extrabold"
+            type="submit"
+            disabled={isLoadingSubmit}
+          >
+            {isLoadingSubmit && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoadingSubmit ? "Salvando…" : "Concluir cadastro"}
           </Button>
         </form>
       </Form>
