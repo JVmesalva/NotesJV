@@ -2,9 +2,9 @@
 
 import ErrorBlock from "@/components/error-block"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { LoaderIcon, LockIcon } from "lucide-react"
+import { LoaderIcon } from "lucide-react"
 import Link from "next/link"
 import useForgotPassword from "./_hooks/use-forgot-password"
 
@@ -13,57 +13,58 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      <LockIcon className="mb-3 h-20 w-20" />
-      <h1 className="mb-8 text-3xl font-bold md:text-4xl">Forgot password</h1>
-      <p className="mb-3 w-full text-left text-sm">
-        Enter email address associated with your account, we&apos;ll send you a link with
-        instruction to reset your password.
+      <h1 className="m-0 text-[26px] font-extrabold leading-tight">Redefinir senha</h1>
+      <p className="mb-6 mt-2 text-sm leading-relaxed text-muted-foreground">
+        Informe o e-mail da sua conta. Enviaremos um link para você criar uma nova senha.
       </p>
 
       <Form {...form}>
-        <form
-          onSubmit={submitHandler}
-          className="flex w-full flex-col gap-y-3"
-          autoComplete="off"
-        >
+        <form onSubmit={submitHandler} className="grid w-full gap-4" autoComplete="off">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-bold">E-mail</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter your email address..."
-                    type="text"
+                    placeholder="seu@email.com"
+                    type="email"
+                    autoComplete="email"
+                    className="h-11 rounded-[10px] bg-background px-3"
                     {...field}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button size="lg" className="w-full" type="submit" disabled={isLoadingSubmit}>
-            {isLoadingSubmit && (
-              <LoaderIcon className="animate mr-2 h-4 w-4 animate-spin" />
-            )}
-            Send Instruction Link
-          </Button>
-
           <ErrorBlock message={errors.root?.apiError.message} />
 
-          <hr className="my-8 w-full" />
-
-          <div className="flex justify-center gap-x-1 text-sm">
-            <p>Don&apos;t have an account?</p>
-
-            <Button variant="link-blue" className="h-auto p-0 font-normal" asChild>
-              <Link href="/signup">Sign up here</Link>
-            </Button>
-          </div>
+          <Button
+            size="lg"
+            className="h-11 w-full rounded-[10px] font-extrabold"
+            type="submit"
+            disabled={isLoadingSubmit}
+          >
+            {isLoadingSubmit && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoadingSubmit ? "Enviando…" : "Enviar link de redefinição"}
+          </Button>
         </form>
       </Form>
+
+      <div className="mt-5 flex flex-col gap-2 text-center text-xs text-muted-foreground">
+        <Link href="/login" className="font-semibold text-primary hover:underline">
+          Voltar para entrar
+        </Link>
+        <p>
+          Ainda não possui uma conta?{" "}
+          <Link href="/signup" className="font-semibold text-primary hover:underline">
+            Cadastrar
+          </Link>
+        </p>
+      </div>
     </>
   )
 }
