@@ -15,9 +15,8 @@ export default function useForgotPassword() {
     const res = await resetPasswordAsync(email)
 
     if (res?.error) form.setError("root.apiError", { message: res.error })
-    else router.replace(`/forgot-password-verify?mailto=${email}`)
+    else router.replace(`/forgot-password-verify?mailto=${encodeURIComponent(email)}`)
   })
-
 
   return {
     form,
