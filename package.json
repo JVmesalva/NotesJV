@@ -1,7 +1,7 @@
 {
-  "name": "station_note",
-  "description": "Realtime, free & open source note taking app for everybody",
-  "version": "0.1.0",
+  "name": "jv-notes",
+  "description": "Aplicativo pessoal de notas online.",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "engines": {

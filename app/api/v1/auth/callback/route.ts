@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server"
 import { appUrl } from "@/lib/supabase/config"
+import { createClient } from "@/lib/supabase/server"
 import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 
