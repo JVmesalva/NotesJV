@@ -1,18 +1,39 @@
-import { useRef } from "react"
+import { useCallback, useRef } from "react"
 
 export default function useDebounceCallback(delay = 300) {
-  const ref = useRef<number | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const callbackRef = useRef<(() => void) | null>(null)
 
-  const delayedCallback = (cb: Function) => {
-    if (ref.current === null) {
-      const timeoutId = setTimeout(cb, delay)
-      ref.current = timeoutId
-    } else {
-      clearTimeout(ref.current)
-      const newTimeoutId = setTimeout(cb, delay)
-      ref.current = newTimeoutId
-    }
-  }
+  const cancel = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    timeoutRef.current = null
+    callbackRef.current = null
+  }, [])
 
-  return { delayedCallback }
+  const flush = useCallback(() => {
+    if (!callbackRef.current) return
+
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    const callback = callbackRef.current
+    timeoutRef.current = null
+    callbackRef.current = null
+    callback()
+  }, [])
+
+  const delayedCallback = useCallback(
+    (callback: () => void) => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+      callbackRef.current = callback
+      timeoutRef.current = setTimeout(() => {
+        const pendingCallback = callbackRef.current
+        timeoutRef.current = null
+        callbackRef.current = null
+        pendingCallback?.()
+      }, delay)
+    },
+    [delay],
+  )
+
+  return { delayedCallback, flush, cancel }
 }
