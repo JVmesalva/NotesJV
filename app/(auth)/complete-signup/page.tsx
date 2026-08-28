@@ -8,10 +8,7 @@ export default async function CompleteSignUpRootPage() {
   const cookiesStore = await cookies()
   const server = createClient(cookiesStore)
 
-  const { data: profile } = await server
-    .from("profiles")
-    .select("username, fullname")
-    .single()
+  const { data: profile } = await server.from("profiles").select("*").single()
 
   if (profile?.fullname && profile?.username) return redirect("/")
 
