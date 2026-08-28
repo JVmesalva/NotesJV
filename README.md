@@ -1,95 +1,49 @@
-## 🚀 Live demo:
+# JV notes
 
-For testing purpose only.
-[station-proto.netlify.app](https://station-proto.netlify.app)
+Aplicativo pessoal de notas online, disponível em `https://jvlc.cc`.
 
-## 📦 Tech Stack
+## Stack
 
-#### Frontend
+- Next.js 15
+- React 18
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Zustand
+- EditorJS
+- Supabase
 
-- [NextJS](https://supabase.com)
-- [TailwindCSS](https://tailwindcss.com/)
-- [Shadcn/ui](https://ui.shadcn.com/)
-- [Zustand](https://github.com/pmndrs/zustand)
-- [Zod](https://github.com/colinhacks/zod)
-- [Emoji Mart](https://github.com/missive/emoji-mart)
-- etc, at the package.json file
+## Autenticação
 
-#### Backend
+A V1 utiliza somente autenticação por e-mail e senha através do Supabase Auth. O projeto não utiliza login social/OAuth.
 
-- [Supabase](https://nextjs.org)
+## Desenvolvimento local
 
-## 🎯 Features
-
-- User Authentication ✅
-- Mobile responsive ✅
-- Dark & light mode ✅
-- Search & trash ✅
-- Expandable sidebar ✅
-- Realtime sidebar ✅
-- Block editor ✅
-- Realtime editor ⏳
-- Publishable ⏳
-
-## Installation
-
-To clone and run this application locally, you'll need Git, Docker & Node.js installed on your computer.
-
-### Run supabase locally
-
-Start supabase container on your local machine, to get your anon key and url for local development purpose
+Crie um arquivo `.env.local` na raiz do projeto:
 
 ```bash
-pnpm dlx supabase start
-# or
-npx supabase start
-```
-
-Please reference to the [Supabase cli doc](https://supabase.com/docs/guides/cli) for more instruction
-
-### Run project locally
-
-1. Clone the project
-
-```bash
-git clone git@github.com:fsaythanry/station-a-notion-clone.git
-cd station-a-notion-clone
-```
-
-2. Create `.env.local` file in root directory
-
-```bash
-
-NEXT_PUBLIC_SUPABASE_URL=<your supabase url>
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your supabase anon key>
-
+NEXT_PUBLIC_SUPABASE_URL=<sua url do Supabase>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<sua chave publica do Supabase>
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-2. Install the app dependencies:
+Instale as dependências e inicie o projeto:
 
 ```bash
 pnpm install
-# or
-npm install
-# or
-yarn
-# or
+pnpm dev
 ```
 
-2. Run the app:
+Verificações utilizadas antes de publicar alterações:
 
 ```bash
-pnpm dev
-# or
-npm run dev
-# or
-yarn dev
-# or
+pnpm lint
+pnpm test
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Origem e licença
 
-## License
+O JV notes foi desenvolvido a partir do projeto open source Station / `station-a-notion-clone`, originalmente criado por Frialdhy S. Ketty e distribuído sob a licença MIT.
 
-Distributed under the MIT license. See LICENSE for more information.
+O aviso de copyright e os termos da licença original são preservados no arquivo `LICENSE`, conforme exigido pela licença MIT.

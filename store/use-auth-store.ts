@@ -1,10 +1,9 @@
 import { getErrorMessage } from "@/helper/error.helper"
 import { client } from "@/lib/supabase/client"
 import { appUrl } from "@/lib/supabase/config"
-import { type Provider } from "@supabase/supabase-js"
 import { create } from "zustand"
 
-const getAuthCallbackUrl = () => `${appUrl}/api/v1/oauth/callback`
+const getEmailConfirmationCallbackUrl = () => `${appUrl}/api/v1/auth/callback`
 const getPasswordRecoveryUrl = () => `${appUrl}/reset-password`
 
 type AuthAction = {
@@ -18,7 +17,6 @@ type AuthAction = {
     password: string
   }): Promise<{ error: string; isNeedConfirmEmail: boolean } | void>
   signUpAsync(opt: { email: string; password: string }): Promise<{ error: string } | void>
-  signUpWithOauth(opt: { provider: Provider }): Promise<{ error: string } | void>
   signUpVerifyAsync(opt: {
     email: string
     token: string
@@ -82,7 +80,7 @@ export const useAuthStore = create<AuthAction>()(() => ({
       const { data, error } = await client.auth.signUp({
         ...opt,
         options: {
-          emailRedirectTo: getAuthCallbackUrl(),
+          emailRedirectTo: getEmailConfirmationCallbackUrl(),
         },
       })
 
@@ -93,18 +91,6 @@ export const useAuthStore = create<AuthAction>()(() => ({
         if (error.status === 429) throw new Error("")
         throw new Error(error.message)
       }
-    } catch (error) {
-      return { error: getErrorMessage(error as Error) }
-    }
-  },
-  async signUpWithOauth(opt) {
-    try {
-      const { error } = await client.auth.signInWithOAuth({
-        provider: opt.provider,
-        options: { redirectTo: getAuthCallbackUrl() },
-      })
-
-      if (error) throw new Error(error.message)
     } catch (error) {
       return { error: getErrorMessage(error as Error) }
     }
@@ -126,7 +112,7 @@ export const useAuthStore = create<AuthAction>()(() => ({
         type: "signup",
         ...opt,
         options: {
-          emailRedirectTo: getAuthCallbackUrl(),
+          emailRedirectTo: getEmailConfirmationCallbackUrl(),
         },
       })
 

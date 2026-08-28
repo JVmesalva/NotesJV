@@ -1,6 +1,7 @@
 "use client"
 
 import ErrorBlock from "@/components/error-block"
+import InputPassword from "@/components/form/input-password"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -14,14 +15,10 @@ import { Input } from "@/components/ui/input"
 import { LoaderIcon } from "lucide-react"
 import Link from "next/link"
 import Footer from "../_components/footer"
-import { GoogleButton } from "../_components/oauth-button"
 import { useSignUp } from "./_hooks/use-signup"
-import { useAuthStore } from "@/store/use-auth-store"
-import InputPassword from "@/components/form/input-password"
 
 export default function SignUpPage() {
   const { errors, form, isLoadingSubmit, submitHandler } = useSignUp()
-  const { signUpWithOauth } = useAuthStore()
 
   return (
     <>
@@ -79,11 +76,7 @@ export default function SignUpPage() {
         </form>
       </Form>
 
-      <hr className="my-8 w-full" />
-
-      <GoogleButton clickHandler={() => signUpWithOauth({ provider: "google" })} />
-
-      <div className="mt-5 flex justify-center gap-x-1 text-sm">
+      <div className="mt-8 flex justify-center gap-x-1 text-sm">
         <p>Have an account?</p>
 
         <Button variant="link-blue" className="h-auto p-0 font-normal" asChild>

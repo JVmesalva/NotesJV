@@ -5,6 +5,5 @@ import Footer from "@/app/(auth)/_components/footer"
 it("render without error", () => {
   render(<Footer />)
 
-  expect(screen.getByRole("link", { name: /privacy policy/i })).toBeInTheDocument()
-  expect(screen.getByRole("link", { name: /terms & conditions/i })).toBeInTheDocument()
+  expect(screen.getByText(/site pessoal de notas online/i)).toBeInTheDocument()
 })

@@ -34,7 +34,7 @@ export default function FeedbackDialog({ children }: Props) {
 
         <div className="mb-7 mt-4 flex flex-col items-center px-3">
           <p className="mb-1 text-sm">
-            Como você se sente usando o <strong>Station Note</strong>?
+            Como você se sente usando o <strong>JV notes</strong>?
           </p>
           <RadioGroup
             className="flex gap-x-2 md:gap-x-3"
