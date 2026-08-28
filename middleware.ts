@@ -1,9 +1,20 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { createClient } from "./lib/supabase/middleware"
-import { appUrl } from "./lib/supabase/config"
 
 const protectedRoutes = ["/doc", "/reset-password", "/settings"]
 const privateRoutes = ["/login", "/signup", "/forget-password"]
+
+const copySessionCookies = (target: NextResponse, source: NextResponse) => {
+  source.cookies.getAll().forEach(cookie => target.cookies.set(cookie))
+  return target
+}
+
+const routeUrl = (request: NextRequest, pathname: string) => {
+  const url = request.nextUrl.clone()
+  url.pathname = pathname
+  url.search = ""
+  return url
+}
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request)
@@ -13,13 +24,36 @@ export async function middleware(request: NextRequest) {
   const { data } = await supabase.auth.getSession()
 
   const { pathname } = request.nextUrl
+  const hasSession = Boolean(data.session)
 
-  if (!data.session && protectedRoutes.some(r => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL("/login", appUrl))
+  // jvlc.cc is the app home. Logged-out visitors go to login; logged-in
+  // visitors see the existing /doc dashboard while the browser keeps "/".
+  if (pathname === "/") {
+    if (!hasSession) {
+      return copySessionCookies(
+        NextResponse.redirect(routeUrl(request, "/login")),
+        response,
+      )
+    }
+
+    return copySessionCookies(
+      NextResponse.rewrite(routeUrl(request, "/doc")),
+      response,
+    )
   }
 
-  if (data.session && privateRoutes.some(r => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL("/doc", appUrl))
+  if (!hasSession && protectedRoutes.some(r => pathname.startsWith(r))) {
+    return copySessionCookies(
+      NextResponse.redirect(routeUrl(request, "/login")),
+      response,
+    )
+  }
+
+  if (hasSession && privateRoutes.some(r => pathname.startsWith(r))) {
+    return copySessionCookies(
+      NextResponse.redirect(routeUrl(request, "/")),
+      response,
+    )
   }
 
   return response
