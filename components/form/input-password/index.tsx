@@ -19,7 +19,7 @@ export default function InputPassword({ placeholder, error, field }: Props) {
     <div className={cn("box-content flex h-11 overflow-clip rounded-md")}>
       <Input
         className={cn("peer rounded-r-none border-r-0", error && "border-destructive")}
-        placeholder={showPassword ? placeholder || "Enter your password..." : "********"}
+        placeholder={showPassword ? placeholder || "Digite sua senha..." : "********"}
         type={showPassword ? "text" : "password"}
         {...field}
       />
@@ -34,7 +34,7 @@ export default function InputPassword({ placeholder, error, field }: Props) {
         )}
         onClick={() => setShowPassword(prev => !prev)}
       >
-        {!showPassword ? <span>Show</span> : <span>Hide</span>}
+        {!showPassword ? <span>Mostrar</span> : <span>Ocultar</span>}
       </Button>
     </div>
   )
@@ -71,7 +71,7 @@ InputPassword.Validation = function PasswordValidation({
     <div className="rounded-md bg-sky-500/10 p-3 text-xs text-primary">
       <p className="mb-2 flex items-center gap-x-2 font-medium">
         <InfoIcon size={16} />
-        <span>{`${prefix || "Password"} must contain at least:`}</span>
+        <span>{`${prefix || "A senha"} deve conter pelo menos:`}</span>
       </p>
 
       <ul className="flex flex-col gap-1 text-primary/90">
@@ -79,25 +79,25 @@ InputPassword.Validation = function PasswordValidation({
           <span className="w-3">
             {matchPassword.length ? <CheckIcon size={16} /> : <DotIcon size={16} />}
           </span>
-          <span>8 characters</span>
+          <span>8 caracteres</span>
         </li>
         <li className="flex gap-x-3">
           <span className="w-3">
             {matchPassword.lowercase ? <CheckIcon size={16} /> : <DotIcon size={16} />}
           </span>
-          <span>1 lowercase letter</span>
+          <span>1 letra minúscula</span>
         </li>
         <li className="flex gap-x-3">
           <span className="w-3">
             {matchPassword.uppercase ? <CheckIcon size={16} /> : <DotIcon size={16} />}
           </span>
-          <span>1 uppercase letter</span>
+          <span>1 letra maiúscula</span>
         </li>
         <li className="flex gap-x-3">
           <span className="w-3">
             {matchPassword.digit ? <CheckIcon size={16} /> : <DotIcon size={16} />}
           </span>
-          <span>1 digit (0-9)</span>
+          <span>1 número (0-9)</span>
         </li>
       </ul>
     </div>
