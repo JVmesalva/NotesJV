@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import InputPassword from "@/components/form/input-password"
 import { LoaderIcon } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { useLogin } from "./_hooks/use-login"
 
@@ -24,7 +25,14 @@ export default function LoginPage() {
       <div className="w-full max-w-[420px]">
         <main className="w-full rounded-[18px] border border-border bg-background p-6 shadow-sm sm:p-7">
           <div className="mb-6 flex items-center">
-            <span className="text-lg font-bold tracking-tight">JV notes</span>
+            <Image
+              src="/assets/JV notes logo.svg"
+              alt="JV Notes"
+              width={180}
+              height={48}
+              priority
+              className="h-auto w-[150px] object-contain"
+            />
           </div>
 
           <h1 className="m-0 text-[26px] font-extrabold leading-tight">Entrar</h1>
