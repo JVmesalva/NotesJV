@@ -6,10 +6,9 @@ import { useEffect } from "react"
 
 type Page = Database["public"]["Tables"]["pages"]["Row"]
 
-// only mounting once
 export default function useDocRealtime() {
-  const { sidebarTreeRealtimeHandler } = useSidebarStore()
-  const { docRealtimeHandler } = useDocStore()
+  const sidebarTreeRealtimeHandler = useSidebarStore(state => state.sidebarTreeRealtimeHandler)
+  const docRealtimeHandler = useDocStore(state => state.docRealtimeHandler)
 
   useEffect(() => {
     const subscribe = client
@@ -40,10 +39,11 @@ export default function useDocRealtime() {
         },
       )
       .subscribe()
+
     return () => {
       client.removeChannel(subscribe)
     }
-  }, [])
+  }, [docRealtimeHandler, sidebarTreeRealtimeHandler])
 
   return null
 }

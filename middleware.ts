@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server"
 import { createClient } from "./lib/supabase/middleware"
 
 const protectedRoutes = ["/doc", "/reset-password", "/settings"]
-const privateRoutes = ["/login", "/signup", "/forget-password"]
+const privateRoutes = ["/login", "/signup", "/forgot-password"]
 
 const copySessionCookies = (target: NextResponse, source: NextResponse) => {
   source.cookies.getAll().forEach(cookie => target.cookies.set(cookie))
@@ -36,10 +36,7 @@ export async function middleware(request: NextRequest) {
       )
     }
 
-    return copySessionCookies(
-      NextResponse.rewrite(routeUrl(request, "/doc")),
-      response,
-    )
+    return copySessionCookies(NextResponse.rewrite(routeUrl(request, "/doc")), response)
   }
 
   if (!hasSession && protectedRoutes.some(r => pathname.startsWith(r))) {
@@ -50,10 +47,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (hasSession && privateRoutes.some(r => pathname.startsWith(r))) {
-    return copySessionCookies(
-      NextResponse.redirect(routeUrl(request, "/")),
-      response,
-    )
+    return copySessionCookies(NextResponse.redirect(routeUrl(request, "/")), response)
   }
 
   return response

@@ -4,21 +4,15 @@ import { z } from "zod"
 export const signUpSchema = z.object({
   email: z
     .string()
-    .min(1, { message: "Invalid email address" })
-    .email({ message: "Invalid email address" })
+    .min(1, { message: "Informe seu e-mail" })
+    .email({ message: "E-mail inválido" })
     .trim()
     .toLowerCase(),
   password: z
     .string()
-    .min(8, {
-      message: "Invalid password",
-    })
-    .max(72, {
-      message: "Must contain at most 72 character(s)",
-    })
-    .regex(PASSWORD_REGEX, {
-      message: "Invalid password",
-    }),
+    .min(8, { message: "A senha não atende aos requisitos" })
+    .max(72, { message: "A senha deve ter no máximo 72 caracteres" })
+    .regex(PASSWORD_REGEX, { message: "A senha não atende aos requisitos" }),
 })
 
 export type SignUpSchema = z.infer<typeof signUpSchema>

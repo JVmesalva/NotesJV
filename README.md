@@ -17,15 +17,19 @@ Aplicativo pessoal de notas online, disponível em `https://jvlc.cc`.
 
 A V1 utiliza somente autenticação por e-mail e senha através do Supabase Auth. O projeto não utiliza login social/OAuth.
 
-## Desenvolvimento local
+## Variáveis de ambiente
 
-Crie um arquivo `.env.local` na raiz do projeto:
+A configuração do aplicativo é lida preferencialmente por variáveis de ambiente. Na Vercel, configure as mesmas variáveis para Production e Preview:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=<sua url do Supabase>
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<sua chave publica do Supabase>
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=https://jvlc.cc
+NEXT_PUBLIC_SUPABASE_URL=https://<projeto>.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<chave publica>
 ```
+
+Para desenvolvimento local, copie `.env.example` para `.env.local` e preencha os valores do seu projeto.
+
+## Desenvolvimento local
 
 Instale as dependências e inicie o projeto:
 
