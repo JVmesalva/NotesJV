@@ -5,7 +5,9 @@ import { cookies } from "next/headers"
 import { type Database } from "@/lib/supabase/database.types"
 import { supabasePublishableKey, supabaseUrl } from "@/lib/supabase/config"
 
-const createClient = (cookieStore: ReturnType<typeof cookies>) => {
+type CookieStore = Awaited<ReturnType<typeof cookies>>
+
+const createClient = (cookieStore: CookieStore) => {
   return createServerClient<Database>(supabaseUrl, supabasePublishableKey, {
     cookies: {
       get(name: string) {
