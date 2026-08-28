@@ -18,7 +18,7 @@ export const useLogin = () => {
 
     if (res?.isNeedConfirmEmail) router.push(`/signup-verify?mailto=${props.email}`)
     else if (res?.error) form.setError("root.apiError", { message: res.error })
-    else router.replace("/")
+    else window.location.replace("/")
   })
 
   return {
