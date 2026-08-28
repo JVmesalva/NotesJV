@@ -5,6 +5,7 @@ import { type Provider } from "@supabase/supabase-js"
 import { create } from "zustand"
 
 const getAuthCallbackUrl = () => `${appUrl}/api/v1/oauth/callback`
+const getPasswordRecoveryUrl = () => `${appUrl}/reset-password`
 
 type AuthAction = {
   resetPasswordAsync(email: string): Promise<{ error: string } | void>
@@ -28,7 +29,9 @@ type AuthAction = {
 export const useAuthStore = create<AuthAction>()(() => ({
   async resetPasswordAsync(email) {
     try {
-      const { error } = await client.auth.resetPasswordForEmail(email)
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: getPasswordRecoveryUrl(),
+      })
 
       if (error) throw new Error(error.message)
     } catch (error) {
