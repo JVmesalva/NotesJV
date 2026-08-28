@@ -116,7 +116,7 @@ export default function Editor() {
     if (!recoveredDraft || recoveredForUuidRef.current === uuid) return
 
     recoveredForUuidRef.current = uuid
-    draftVersionRef.current = Math.max(draftVersionRef.current, recoveredDraft.version)
+    draftVersionRef.current = recoveredDraft.version
     delayedCallback(() => {
       void persistOutput(recoveredDraft.data, recoveredDraft.version)
     })
