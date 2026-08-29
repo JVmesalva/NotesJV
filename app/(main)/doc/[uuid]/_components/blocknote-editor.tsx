@@ -6,7 +6,17 @@ import "./blocknote-editor.css"
 
 import { type Block } from "@blocknote/core"
 import { pt } from "@blocknote/core/locales"
-import { useCreateBlockNote } from "@blocknote/react"
+import {
+  FormattingToolbar,
+  FormattingToolbarController,
+  blockTypeSelectItems,
+  getFormattingToolbarItems,
+  type ComponentProps,
+  useBlockNoteEditor,
+  useComponentsContext,
+  useCreateBlockNote,
+  useEditorState,
+} from "@blocknote/react"
 import { BlockNoteView } from "@blocknote/shadcn"
 import useDebounceCallback from "@/hook/use-debounce-callback"
 import { type Json } from "@/lib/supabase/database.types"
@@ -49,6 +59,92 @@ const clearDraft = (uuid: string) => {
     // Ignore browser storage errors.
   }
 }
+
+const StableBlockTypeSelect = () => {
+  const Components = useComponentsContext()!
+  const editor = useBlockNoteEditor()
+  const lastTextSelectionRef = useRef<Block[]>([])
+
+  const selectionState = useEditorState({
+    editor,
+    selector: ({ editor }) => {
+      const selection = editor.getSelection()
+
+      return {
+        hasTextSelection: Boolean(selection),
+        blocks: selection?.blocks || [editor.getTextCursorPosition().block],
+      }
+    },
+  })
+
+  if (selectionState.hasTextSelection) {
+    lastTextSelectionRef.current = selectionState.blocks as Block[]
+  }
+
+  // Opening the shadcn select can temporarily move focus away from the editor.
+  // Keep the blocks that were selected before that focus change so the type
+  // conversion still applies to the intended range.
+  const selectedBlocks =
+    selectionState.hasTextSelection || lastTextSelectionRef.current.length === 0
+      ? (selectionState.blocks as Block[])
+      : lastTextSelectionRef.current
+  const firstSelectedBlock = selectedBlocks[0]
+
+  if (!firstSelectedBlock || !editor.isEditable) return null
+
+  const selectItems: ComponentProps["FormattingToolbar"]["Select"]["items"] =
+    blockTypeSelectItems(editor.dictionary).map((item) => {
+      const Icon = item.icon
+      const firstBlockProps = firstSelectedBlock.props as Record<string, unknown>
+      const typesMatch = item.type === firstSelectedBlock.type
+      const propsMatch = Object.entries(item.props || {}).every(
+        ([propName, propValue]) => firstBlockProps[propName] === propValue,
+      )
+
+      return {
+        text: item.name,
+        icon: <Icon size={16} />,
+        isSelected: typesMatch && propsMatch,
+        onClick: () => {
+          const scrollX = window.scrollX
+          const scrollY = window.scrollY
+          const blocksToUpdate = [...selectedBlocks]
+
+          // Do not call editor.focus() here. BlockNote's default selector does,
+          // which can collapse a multi-block selection and scroll it into view.
+          editor.transact(() => {
+            for (const block of blocksToUpdate) {
+              editor.updateBlock(
+                block,
+                {
+                  type: item.type,
+                  props: item.props,
+                } as Parameters<typeof editor.updateBlock>[1],
+              )
+            }
+          })
+
+          // Some browsers restore focus after the select closes. Preserve the
+          // viewport across that asynchronous focus handoff as well.
+          requestAnimationFrame(() => {
+            window.scrollTo(scrollX, scrollY)
+            requestAnimationFrame(() => window.scrollTo(scrollX, scrollY))
+          })
+        },
+      }
+    })
+
+  if (!selectItems.some((item) => item.isSelected)) return null
+
+  return <Components.FormattingToolbar.Select className="bn-select" items={selectItems} />
+}
+
+const StableFormattingToolbar = () => (
+  <FormattingToolbar>
+    <StableBlockTypeSelect />
+    {getFormattingToolbarItems().slice(1)}
+  </FormattingToolbar>
+)
 
 export default function BlockNoteEditor() {
   const params = useParams()
@@ -163,9 +259,12 @@ export default function BlockNoteEditor() {
         className="jv-blocknote"
         editor={editor}
         editable={!isLocked}
+        formattingToolbar={false}
         onChange={() => updateHandler(editor.document)}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
-      />
+      >
+        <FormattingToolbarController formattingToolbar={StableFormattingToolbar} />
+      </BlockNoteView>
     </div>
   )
 }
