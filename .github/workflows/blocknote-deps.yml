@@ -1,0 +1,34 @@
+name: Install BlockNote dependencies
+
+on:
+  push:
+    branches:
+      - JVnotion
+    paths:
+      - .github/workflows/blocknote-deps.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: JVnotion
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8.10.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm add @blocknote/core@0.54.0 @blocknote/react@0.54.0 @blocknote/shadcn@0.54.0
+      - name: Commit dependency lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json pnpm-lock.yaml
+          git commit -m "Add BlockNote editor dependencies"
+          git push origin HEAD:JVnotion
