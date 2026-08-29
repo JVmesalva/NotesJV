@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - stabilization/v1-blockers
+      - JVnotion
   pull_request:
     branches:
       - main
