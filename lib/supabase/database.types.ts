@@ -38,9 +38,11 @@ export interface Database {
       }
       pages: {
         Row: {
+          blocknote_content: Json | null
           content: Json | null
           created_at: string
           description: string | null
+          editor_format: string
           emoji: Json | null
           id: number
           image_url: string | null
@@ -54,9 +56,11 @@ export interface Database {
           uuid: string
         }
         Insert: {
+          blocknote_content?: Json | null
           content?: Json | null
           created_at?: string
           description?: string | null
+          editor_format?: string
           emoji?: Json | null
           id?: number
           image_url?: string | null
@@ -70,9 +74,11 @@ export interface Database {
           uuid?: string
         }
         Update: {
+          blocknote_content?: Json | null
           content?: Json | null
           created_at?: string
           description?: string | null
+          editor_format?: string
           emoji?: Json | null
           id?: number
           image_url?: string | null
@@ -222,4 +228,3 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
   ? Database["public"]["Enums"][PublicEnumNameOrOptions]
   : never
-
