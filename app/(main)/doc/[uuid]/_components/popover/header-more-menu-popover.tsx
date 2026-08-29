@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { appUrl } from "@/lib/supabase/config"
 import { type EditorFormat, useDocStore } from "@/store/use-doc-store"
 import {
   BlocksIcon,
@@ -127,7 +128,7 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
               className="h-8 w-full items-center justify-start px-2 text-xs font-normal"
               onClick={() => {
                 ref.current?.click()
-                copy(`${window.origin}/doc/${doc?.uuid}`)
+                copy(`${appUrl}/doc/${doc?.uuid}`)
               }}
             >
               <CopyIcon className="mr-2 h-4 w-4" />
