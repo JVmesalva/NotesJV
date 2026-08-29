@@ -34,7 +34,7 @@
   line-height: 1.5;
 }
 
-.jv-blocknote .bn-block-content {
+.jv-blocknote .bn-block-content:not([data-content-type="divider"]) {
   min-height: 28px;
 }
 
@@ -45,7 +45,11 @@
   letter-spacing: normal;
 }
 
-/* Notion-like heading scale. BlockNote's defaults are intentionally larger. */
+/*
+ * Notion-like heading scale. Level 1 is BlockNote's default heading prop, so
+ * BlockNote may omit data-level="1" from the DOM. Match both representations.
+ */
+.jv-blocknote .bn-block-content[data-content-type="heading"]:not([data-level]) .bn-inline-content,
 .jv-blocknote .bn-block-content[data-content-type="heading"][data-level="1"] .bn-inline-content {
   font-size: 30px !important;
   line-height: 1.25 !important;
@@ -95,8 +99,23 @@
   line-height: 1.5;
 }
 
+/* Consecutive dividers should read as a tight group, like (or tighter than) Notion. */
 .jv-blocknote .bn-block-content[data-content-type="divider"] {
-  margin-block: 6px;
+  min-height: 6px !important;
+  height: 6px;
+  margin: 0 !important;
+  padding: 2px 0 !important;
+}
+
+.jv-blocknote .bn-block-content[data-content-type="divider"] > * {
+  margin-block: 0 !important;
+}
+
+.jv-blocknote .bn-block:has(.bn-block-content[data-content-type="divider"]),
+.jv-blocknote .bn-block-outer:has(.bn-block-content[data-content-type="divider"]) {
+  min-height: 6px !important;
+  margin-block: 0 !important;
+  padding-block: 0 !important;
 }
 
 /* Side controls: quiet by default, like Notion, but clear on hover/focus. */
@@ -203,6 +222,7 @@
     font-size: 15px;
   }
 
+  .jv-blocknote .bn-block-content[data-content-type="heading"]:not([data-level]) .bn-inline-content,
   .jv-blocknote .bn-block-content[data-content-type="heading"][data-level="1"] .bn-inline-content {
     font-size: 27px !important;
   }
