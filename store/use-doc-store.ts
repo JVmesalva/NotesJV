@@ -65,9 +65,38 @@ export const useDocStore = create<DocState & DocAction>()((set, get) => ({
     if (!oldDoc) return false
     if (oldDoc.editor_format === format) return true
 
-    const saved = await get().updateDocAsync(oldDoc.uuid, { editor_format: format })
-    if (saved) set({ undoRedoInstance: null })
-    return saved
+    try {
+      set({
+        saveStatus: "start",
+        doc: { ...oldDoc, editor_format: format },
+        undoRedoInstance: null,
+      })
+
+      const { data, error } = await client
+        .from("pages")
+        .update({ editor_format: format })
+        .eq("uuid", oldDoc.uuid)
+        .select("*")
+        .single()
+
+      if (error) throw new Error(error.message)
+
+      set({
+        doc: data,
+        saveStatus: "success",
+      })
+      return true
+    } catch (error) {
+      set({
+        doc: oldDoc,
+        saveStatus: "failed",
+      })
+      toastError({
+        title: "Não foi possível alterar o formato",
+        description: "Verifique sua conexão e tente novamente.",
+      })
+      return false
+    }
   },
   async toggleLock() {
     const oldDoc = get().doc
