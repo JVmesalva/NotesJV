@@ -5,9 +5,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { useDocStore } from "@/store/use-doc-store"
+import { type EditorFormat, useDocStore } from "@/store/use-doc-store"
 import {
+  BlocksIcon,
+  CheckIcon,
   CopyIcon,
+  FileTextIcon,
   LockIcon,
   RedoIcon,
   Trash2Icon,
@@ -23,11 +26,14 @@ import { Switch } from "@/components/ui/switch"
 export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
   const [_, copy] = useCopyToClipboard()
   const ref = useRef<HTMLButtonElement | null>(null)
-  const { doc, isLocked, toggleLock, undoRedoInstance } = useDocStore()
+  const { doc, isLocked, setEditorFormat, toggleLock, undoRedoInstance } = useDocStore()
+  const [changingFormat, setChangingFormat] = useState(false)
   const [rules, setRules] = useState({
     canUndo: false,
     canRedo: false,
   })
+
+  const editorFormat: EditorFormat = doc?.editor_format === "notion" ? "notion" : "standard"
 
   const createdAt = doc
     ? timeAgo(doc.created_at as unknown as Date, { withAgo: true })
@@ -39,8 +45,8 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
 
   const setUndoRedoStatus = () =>
     setRules({
-      canRedo: undoRedoInstance.canRedo(),
-      canUndo: undoRedoInstance.canUndo(),
+      canRedo: Boolean(undoRedoInstance?.canRedo?.()),
+      canUndo: Boolean(undoRedoInstance?.canUndo?.()),
     })
 
   const undoRedoHandler = (type: "undo" | "redo") => {
@@ -49,6 +55,14 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
     if (type === "undo" && rules.canUndo) undoRedoInstance.undo()
     if (type === "redo" && rules.canRedo) undoRedoInstance.redo()
     setUndoRedoStatus()
+  }
+
+  const formatHandler = async (format: EditorFormat) => {
+    if (changingFormat || isLocked || format === editorFormat) return
+
+    setChangingFormat(true)
+    await setEditorFormat(format)
+    setChangingFormat(false)
   }
 
   const openChangeHandler = (open: boolean) => {
@@ -78,6 +92,32 @@ export default function HeaderMoreMenuPopover({ children }: PropsWithChildren) {
                 <Switch checked={isLocked} id="toggle-lock" onClick={() => toggleLock()} />
               </label>
             </div>
+          </section>
+
+          <section className="border-b px-1 py-1">
+            <p className="px-2 pb-1 pt-1 text-[10px] font-medium text-muted-foreground">Formato</p>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-full items-center justify-start px-2 text-xs font-normal"
+              onClick={() => void formatHandler("standard")}
+              disabled={isLocked || changingFormat}
+            >
+              <FileTextIcon className="mr-2 h-4 w-4" />
+              <span className="flex-1 text-left">Padrão</span>
+              {editorFormat === "standard" && <CheckIcon className="h-4 w-4" />}
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-full items-center justify-start px-2 text-xs font-normal"
+              onClick={() => void formatHandler("notion")}
+              disabled={isLocked || changingFormat}
+            >
+              <BlocksIcon className="mr-2 h-4 w-4" />
+              <span className="flex-1 text-left">Notion</span>
+              {editorFormat === "notion" && <CheckIcon className="h-4 w-4" />}
+            </Button>
           </section>
 
           <section className="border-b px-1 py-1">
