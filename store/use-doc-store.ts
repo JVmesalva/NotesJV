@@ -6,13 +6,24 @@ import { create } from "zustand"
 
 type Page = Database["public"]["Tables"]["pages"]["Row"]
 
+export type EditorFormat = "standard" | "notion"
+
 type Status = "start" | "success" | "failed" | null
+
+type EditablePageFields = Pick<
+  Page,
+  | "blocknote_content"
+  | "content"
+  | "description"
+  | "editor_format"
+  | "emoji"
+  | "image_url"
+  | "title"
+>
 
 type DocState = {
   saveStatus: Status
-  failedSaveData: Partial<
-    Pick<Page, "content" | "description" | "emoji" | "image_url" | "title">
-  >
+  failedSaveData: Partial<EditablePageFields>
   loadingDoc: boolean
   doc: Page | null
   isLocked: boolean
@@ -22,10 +33,8 @@ type DocState = {
 type DocAction = {
   setSaveStatus(status: Status): void
   getDocAsync(uuid: string): Promise<{ uuid: string; parent_uuid: string | null } | void>
-  updateDocAsync(
-    uuid: string,
-    doc: Partial<Pick<Page, "content" | "description" | "emoji" | "image_url" | "title">>,
-  ): Promise<boolean>
+  updateDocAsync(uuid: string, doc: Partial<EditablePageFields>): Promise<boolean>
+  setEditorFormat(format: EditorFormat): Promise<boolean>
   docRealtimeHandler(opt: {
     eventType: `${REALTIME_POSTGRES_CHANGES_LISTEN_EVENT}`
     doc: Page
@@ -50,6 +59,15 @@ export const useDocStore = create<DocState & DocAction>()((set, get) => ({
   ...initialState,
   setUndoRedoInstance(undoRedoInstance) {
     set({ undoRedoInstance })
+  },
+  async setEditorFormat(format) {
+    const oldDoc = get().doc
+    if (!oldDoc) return false
+    if (oldDoc.editor_format === format) return true
+
+    const saved = await get().updateDocAsync(oldDoc.uuid, { editor_format: format })
+    if (saved) set({ undoRedoInstance: null })
+    return saved
   },
   async toggleLock() {
     const oldDoc = get().doc
