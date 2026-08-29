@@ -11,7 +11,6 @@ import {
   FormattingToolbarController,
   blockTypeSelectItems,
   getFormattingToolbarItems,
-  type ComponentProps,
   useBlockNoteEditor,
   useComponentsContext,
   useCreateBlockNote,
@@ -21,14 +20,23 @@ import { BlockNoteView } from "@blocknote/shadcn"
 import useDebounceCallback from "@/hook/use-debounce-callback"
 import { type Json } from "@/lib/supabase/database.types"
 import { useDocStore } from "@/store/use-doc-store"
+import { ChevronDown } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useParams } from "next/navigation"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 type LocalDraft = {
   savedAt: number
   version: number
   data: Block[]
+}
+
+type ScrollSnapshot = {
+  scrollParent: HTMLElement | null
+  parentTop: number
+  parentLeft: number
+  windowX: number
+  windowY: number
 }
 
 const draftKey = (uuid: string) => `jv-notes:blocknote-draft:${uuid}`
@@ -60,10 +68,42 @@ const clearDraft = (uuid: string) => {
   }
 }
 
+const findScrollableParent = (element: HTMLElement | null) => {
+  let current = element?.parentElement ?? null
+
+  while (current) {
+    const styles = window.getComputedStyle(current)
+    const canScrollY = /auto|scroll|overlay/.test(styles.overflowY)
+
+    if (canScrollY && current.scrollHeight > current.clientHeight) return current
+    current = current.parentElement
+  }
+
+  return null
+}
+
+const captureScroll = (element: HTMLElement | null): ScrollSnapshot => {
+  const scrollParent = findScrollableParent(element)
+
+  return {
+    scrollParent,
+    parentTop: scrollParent?.scrollTop ?? 0,
+    parentLeft: scrollParent?.scrollLeft ?? 0,
+    windowX: window.scrollX,
+    windowY: window.scrollY,
+  }
+}
+
+const restoreScroll = (snapshot: ScrollSnapshot) => {
+  snapshot.scrollParent?.scrollTo(snapshot.parentLeft, snapshot.parentTop)
+  window.scrollTo(snapshot.windowX, snapshot.windowY)
+}
+
 const StableBlockTypeSelect = () => {
   const Components = useComponentsContext()!
   const editor = useBlockNoteEditor()
   const lastTextSelectionRef = useRef<Block[]>([])
+  const [isOpen, setIsOpen] = useState(false)
 
   const selectionState = useEditorState({
     editor,
@@ -81,9 +121,6 @@ const StableBlockTypeSelect = () => {
     lastTextSelectionRef.current = selectionState.blocks as Block[]
   }
 
-  // Opening the shadcn select can temporarily move focus away from the editor.
-  // Keep the blocks that were selected before that focus change so the type
-  // conversion still applies to the intended range.
   const selectedBlocks =
     selectionState.hasTextSelection || lastTextSelectionRef.current.length === 0
       ? (selectionState.blocks as Block[])
@@ -92,59 +129,119 @@ const StableBlockTypeSelect = () => {
 
   if (!firstSelectedBlock || !editor.isEditable) return null
 
-  const selectItems: ComponentProps["FormattingToolbar"]["Select"]["items"] =
-    blockTypeSelectItems(editor.dictionary).map((item) => {
-      const Icon = item.icon
-      const firstBlockProps = firstSelectedBlock.props as Record<string, unknown>
-      const typesMatch = item.type === firstSelectedBlock.type
-      const propsMatch = Object.entries(item.props || {}).every(
-        ([propName, propValue]) => firstBlockProps[propName] === propValue,
-      )
+  const items = blockTypeSelectItems(editor.dictionary)
+  const firstBlockProps = firstSelectedBlock.props as Record<string, unknown>
+  const selectedItem = items.find((item) => {
+    if (item.type !== firstSelectedBlock.type) return false
 
-      return {
-        text: item.name,
-        icon: <Icon size={16} />,
-        isSelected: typesMatch && propsMatch,
-        onClick: () => {
-          const scrollX = window.scrollX
-          const scrollY = window.scrollY
-          const blocksToUpdate = [...selectedBlocks]
+    return Object.entries(item.props || {}).every(
+      ([propName, propValue]) => firstBlockProps[propName] === propValue,
+    )
+  })
 
-          // Do not call editor.focus() here. BlockNote's default selector does,
-          // which can collapse a multi-block selection and scroll it into view.
-          editor.transact(() => {
-            for (const block of blocksToUpdate) {
-              editor.updateBlock(
-                block,
-                {
-                  type: item.type,
-                  props: item.props,
-                } as Parameters<typeof editor.updateBlock>[1],
-              )
-            }
-          })
+  if (!selectedItem) return null
 
-          // Some browsers restore focus after the select closes. Preserve the
-          // viewport across that asynchronous focus handoff as well.
-          requestAnimationFrame(() => {
-            window.scrollTo(scrollX, scrollY)
-            requestAnimationFrame(() => window.scrollTo(scrollX, scrollY))
-          })
-        },
+  const applyBlockType = (item: (typeof items)[number]) => {
+    const scrollSnapshot = captureScroll(editor.portalElement)
+    const blocksToUpdate = [...selectedBlocks]
+
+    editor.transact(() => {
+      for (const block of blocksToUpdate) {
+        editor.updateBlock(
+          block,
+          {
+            type: item.type,
+            props: item.props,
+          } as Parameters<typeof editor.updateBlock>[1],
+        )
       }
     })
 
-  if (!selectItems.some((item) => item.isSelected)) return null
+    setIsOpen(false)
 
-  return <Components.FormattingToolbar.Select className="bn-select" items={selectItems} />
+    // The page scrolls inside <main>, not on window. Restore both the actual
+    // scroll container and window after BlockNote re-renders the changed block.
+    restoreScroll(scrollSnapshot)
+    requestAnimationFrame(() => {
+      restoreScroll(scrollSnapshot)
+      requestAnimationFrame(() => restoreScroll(scrollSnapshot))
+    })
+  }
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        className="flex h-7 min-w-[92px] items-center justify-between gap-1 rounded-[5px] px-2 text-[13px] hover:bg-accent hover:text-accent-foreground"
+        onPointerDown={(event) => {
+          // Keeping pointer focus out of the picker is the important part here:
+          // the editor selection stays alive while the menu is open.
+          event.preventDefault()
+          event.stopPropagation()
+          setIsOpen((open) => !open)
+        }}
+      >
+        <span>{selectedItem.name}</span>
+        <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-70" />
+      </button>
+
+      {isOpen && (
+        <div
+          role="listbox"
+          className="absolute left-0 top-full z-[90] mt-1 min-w-[190px] rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md"
+          onPointerDown={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+          }}
+        >
+          {items.map((item) => {
+            const Icon = item.icon
+            const isSelected = item === selectedItem
+
+            return (
+              <button
+                key={`${item.type}-${JSON.stringify(item.props || {})}`}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-[13px] hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
+                onPointerDown={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  applyBlockType(item)
+                }}
+              >
+                <Icon size={16} />
+                <span>{item.name}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
 }
 
-const StableFormattingToolbar = () => (
-  <FormattingToolbar>
-    <StableBlockTypeSelect />
-    {getFormattingToolbarItems().slice(1)}
-  </FormattingToolbar>
-)
+const StableFormattingToolbar = () => {
+  // Keep the BlockNote toolbar root/buttons, but bypass its ShadCN Select for
+  // block type changes. That Select moves focus out of the editor before its
+  // value callback fires, which is what breaks this interaction in JV Notes.
+  void ComponentsForTypeSafety
+
+  return (
+    <FormattingToolbar>
+      <StableBlockTypeSelect />
+      {getFormattingToolbarItems().slice(1)}
+    </FormattingToolbar>
+  )
+}
+
+// Referencing the context type through a harmless constant keeps the custom
+// toolbar tied to the configured component system without rendering its Select.
+const ComponentsForTypeSafety = ComponentsPlaceholder
+const ComponentsPlaceholder = null
 
 export default function BlockNoteEditor() {
   const params = useParams()
