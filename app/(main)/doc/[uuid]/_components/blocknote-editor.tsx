@@ -12,7 +12,6 @@ import {
   blockTypeSelectItems,
   getFormattingToolbarItems,
   useBlockNoteEditor,
-  useComponentsContext,
   useCreateBlockNote,
   useEditorState,
 } from "@blocknote/react"
@@ -100,7 +99,6 @@ const restoreScroll = (snapshot: ScrollSnapshot) => {
 }
 
 const StableBlockTypeSelect = () => {
-  const Components = useComponentsContext()!
   const editor = useBlockNoteEditor()
   const lastTextSelectionRef = useRef<Block[]>([])
   const [isOpen, setIsOpen] = useState(false)
@@ -176,8 +174,8 @@ const StableBlockTypeSelect = () => {
         aria-haspopup="listbox"
         className="flex h-7 min-w-[92px] items-center justify-between gap-1 rounded-[5px] px-2 text-[13px] hover:bg-accent hover:text-accent-foreground"
         onPointerDown={(event) => {
-          // Keeping pointer focus out of the picker is the important part here:
-          // the editor selection stays alive while the menu is open.
+          // Do not move pointer focus out of the editor. Keeping the editor
+          // selection alive makes block type conversion reliable.
           event.preventDefault()
           event.stopPropagation()
           setIsOpen((open) => !open)
@@ -224,24 +222,12 @@ const StableBlockTypeSelect = () => {
   )
 }
 
-const StableFormattingToolbar = () => {
-  // Keep the BlockNote toolbar root/buttons, but bypass its ShadCN Select for
-  // block type changes. That Select moves focus out of the editor before its
-  // value callback fires, which is what breaks this interaction in JV Notes.
-  void ComponentsForTypeSafety
-
-  return (
-    <FormattingToolbar>
-      <StableBlockTypeSelect />
-      {getFormattingToolbarItems().slice(1)}
-    </FormattingToolbar>
-  )
-}
-
-// Referencing the context type through a harmless constant keeps the custom
-// toolbar tied to the configured component system without rendering its Select.
-const ComponentsForTypeSafety = ComponentsPlaceholder
-const ComponentsPlaceholder = null
+const StableFormattingToolbar = () => (
+  <FormattingToolbar>
+    <StableBlockTypeSelect />
+    {getFormattingToolbarItems().slice(1)}
+  </FormattingToolbar>
+)
 
 export default function BlockNoteEditor() {
   const params = useParams()
