@@ -13,7 +13,7 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_APP_URL: https://jvlc.cc
+      NEXT_PUBLIC_APP_URL: https://admin.jvlc.cc
       NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-key
     steps:
