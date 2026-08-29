@@ -15,14 +15,20 @@ const Editor = dynamic(() => import("./_components/editor"), {
   ssr: false,
 })
 
+const BlockNoteEditor = dynamic(() => import("./_components/blocknote-editor"), {
+  ssr: false,
+})
+
 export default function DocDetailPage() {
   const params = useParams()
   const uuid = params.uuid as string
-  const { getDocAsync } = useDocStore()
+  const { doc, getDocAsync, loadingDoc } = useDocStore()
 
   useEffectOnce(() => {
     getDocAsync(uuid)
   })
+
+  const editorFormat = doc?.editor_format === "notion" ? "notion" : "standard"
 
   return (
     <ScrollArea className="h-[calc(100vh-48px)]">
@@ -32,7 +38,8 @@ export default function DocDetailPage() {
       <Cover />
       <Action />
       <Title />
-      <Editor />
+      {!loadingDoc && doc &&
+        (editorFormat === "notion" ? <BlockNoteEditor /> : <Editor />)}
     </ScrollArea>
   )
 }
