@@ -11,10 +11,11 @@ const isSupabaseUrl = (value?: string) => {
 
 const configuredAppUrl = normalizeUrl(process.env.NEXT_PUBLIC_APP_URL)
 const configuredSupabaseUrl = normalizeUrl(process.env.NEXT_PUBLIC_SUPABASE_URL)
+const adminAppUrl = "https://admin.jvlc.cc"
 
 // The current Vercel project still has two legacy public URL variables with
-// swapped values. Prefer semantically valid values so production remains safe
-// until those dashboard variables are corrected.
+// swapped values. Prefer semantically valid values for Supabase, while the
+// JVnotion branch always uses its dedicated admin.jvlc.cc application domain.
 export const supabaseUrl =
   [configuredSupabaseUrl, configuredAppUrl].find(isSupabaseUrl) ??
   (() => {
@@ -22,10 +23,10 @@ export const supabaseUrl =
   })()
 
 export const appUrl =
-  configuredAppUrl && !isSupabaseUrl(configuredAppUrl)
-    ? configuredAppUrl
-    : process.env.NODE_ENV === "production"
-      ? "https://jvlc.cc"
+  process.env.NODE_ENV === "production"
+    ? adminAppUrl
+    : configuredAppUrl && !isSupabaseUrl(configuredAppUrl)
+      ? configuredAppUrl
       : "http://localhost:3000"
 
 export const supabasePublishableKey =
