@@ -2,8 +2,10 @@
 
 import "@blocknote/core/fonts/inter.css"
 import "@blocknote/shadcn/style.css"
+import "./blocknote-editor.css"
 
 import { type Block } from "@blocknote/core"
+import { pt } from "@blocknote/core/locales"
 import { useCreateBlockNote } from "@blocknote/react"
 import { BlockNoteView } from "@blocknote/shadcn"
 import useDebounceCallback from "@/hook/use-debounce-callback"
@@ -81,6 +83,7 @@ export default function BlockNoteEditor() {
   const editor = useCreateBlockNote(
     {
       initialContent: initialBlocks,
+      dictionary: pt,
     },
     [uuid],
   )
@@ -157,6 +160,7 @@ export default function BlockNoteEditor() {
   return (
     <div className="relative mx-auto max-w-3xl px-4 pb-24 md:px-0">
       <BlockNoteView
+        className="jv-blocknote"
         editor={editor}
         editable={!isLocked}
         onChange={() => updateHandler(editor.document)}
