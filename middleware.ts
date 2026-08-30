@@ -17,13 +17,28 @@ const routeUrl = (request: NextRequest, pathname: string) => {
 }
 
 export async function middleware(request: NextRequest) {
+  const { pathname, hostname } = request.nextUrl
+
+  // teste.jvlc.cc is a public visual-only preview for Google Stitch.
+  // It never enters the authenticated app or exposes user data.
+  if (hostname === "teste.jvlc.cc") {
+    if (pathname === "/") {
+      return NextResponse.rewrite(routeUrl(request, "/stitch"))
+    }
+
+    if (pathname === "/stitch" || pathname.startsWith("/assets/")) {
+      return NextResponse.next()
+    }
+
+    return NextResponse.redirect(routeUrl(request, "/"))
+  }
+
   const { supabase, response } = createClient(request)
 
   // Refresh session if expired - required for Server Components
   // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
   const { data } = await supabase.auth.getSession()
 
-  const { pathname } = request.nextUrl
   const hasSession = Boolean(data.session)
 
   // jvlc.cc is the app home. Logged-out visitors go to login; logged-in
