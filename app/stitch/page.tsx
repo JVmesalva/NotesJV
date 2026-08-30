@@ -1,5 +1,6 @@
 import Image from "next/image"
 
+// Visual-only public preview used by Google Stitch. No user data is loaded here.
 export default function StitchPreviewPage() {
   return (
     <div className="min-h-screen bg-[#d5c6b9] text-[#33261f]">
